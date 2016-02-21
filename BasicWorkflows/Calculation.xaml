@@ -42,13 +42,7 @@
       <Variable x:TypeArguments="x:Int64" Name="m1" />
       <Variable x:TypeArguments="x:Int64" Name="m2" />
     </Sequence.Variables>
-    <fa:Plus sap2010:WorkflowViewState.IdRef="Plus_1" X="10" Y="20">
-      <fa:Plus.Z>
-        <OutArgument x:TypeArguments="x:Int32">
-          <mca:CSharpReference x:TypeArguments="x:Int32">plusResult</mca:CSharpReference>
-        </OutArgument>
-      </fa:Plus.Z>
-    </fa:Plus>
+    <fa:Multiply X="{x:Null}" Y="{x:Null}" Z="{x:Null}" sap2010:WorkflowViewState.IdRef="Multiply_1" />
     <If sap2010:WorkflowViewState.IdRef="If_2">
       <If.Condition>
         <InArgument x:TypeArguments="x:Boolean">
@@ -61,23 +55,6 @@
             <Variable x:TypeArguments="x:String" Name="variable1" />
             <Variable x:TypeArguments="x:String" Name="variable2" />
           </Sequence.Variables>
-          <fa:Multiply sap2010:WorkflowViewState.IdRef="Multiply_1" Y="3">
-            <fa:Multiply.Result>
-              <OutArgument x:TypeArguments="x:Int64">
-                <mca:CSharpReference x:TypeArguments="x:Int64">m2</mca:CSharpReference>
-              </OutArgument>
-            </fa:Multiply.Result>
-            <fa:Multiply.X>
-              <InArgument x:TypeArguments="x:Int32">
-                <mca:CSharpValue x:TypeArguments="x:Int32">plusResult</mca:CSharpValue>
-              </InArgument>
-            </fa:Multiply.X>
-            <fa:Multiply.Z>
-              <OutArgument x:TypeArguments="x:Int64">
-                <mca:CSharpReference x:TypeArguments="x:Int64">m1</mca:CSharpReference>
-              </OutArgument>
-            </fa:Multiply.Z>
-          </fa:Multiply>
           <If sap2010:WorkflowViewState.IdRef="If_1">
             <If.Condition>
               <InArgument x:TypeArguments="x:Boolean">
@@ -99,16 +76,15 @@
         </Sequence>
       </If.Else>
     </If>
-    <sads:DebugSymbol.Symbol>d0BjOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sFicDZw4CAQEtBTMPAgEqNAVlCgIBAjALMFoCAS0tOS09AgEsLUAtRAIBKzcLN1kCAQM7CV4UAgEKYQljFAIBB0ALUBkCARZRC10QAgELYgtiZAIBCE0RTVgCASRDEUNYAgEeSBFIWAIBGEBHQEoCARdUEVRWAgEMWA9YXQIBFFsPW2QCARJiSWJhAgEJWE1YWgIBFVtNW2ECARM=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sDicDUA4CAQEtBS1oAgEWLgVOCgIBAjELMVkCAQM1CUcUAgEKSglMFAIBBzoLRhACAQtLC0tkAgEIPRE9VgIBDEEPQV0CARRED0RkAgESS0lLYQIBCUFNQVoCARVETURhAgET</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="Plus_1" sap:VirtualizedContainerService.HintSize="744,22" />
-      <sap2010:ViewStateData Id="Multiply_1" sap:VirtualizedContainerService.HintSize="464,22" />
+      <sap2010:ViewStateData Id="Multiply_1" sap:VirtualizedContainerService.HintSize="744,22" />
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="211,62" />
       <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
       <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,212" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,398">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,336">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -123,15 +99,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="744,548" />
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="766,734">
+      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="744,486" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="766,672">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Fonlow.Activities.Calculation_1" sap:VirtualizedContainerService.HintSize="806,814" />
+      <sap2010:ViewStateData Id="Fonlow.Activities.Calculation_1" sap:VirtualizedContainerService.HintSize="806,752" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

@@ -8,6 +8,9 @@ using System.Activities;
 
 namespace Fonlow.Activities
 {
+    /// <summary>
+    /// simple X+Y=Z. Old style CodeActivity
+    /// </summary>
     public class Plus : CodeActivity
     {
         protected override void Execute(CodeActivityContext context)
@@ -22,6 +25,9 @@ namespace Fonlow.Activities
         public OutArgument<int> Z { get; set; }//client code accesses Z through dictionary
     }
 
+    /// <summary>
+    /// Simple X*Y=Z. CodeActivity with typed output through generic.
+    /// </summary>
     public class Multiply : CodeActivity<long>
     {
         protected override long Execute(CodeActivityContext context)
@@ -35,7 +41,11 @@ namespace Fonlow.Activities
 
         public InArgument<int> Y { get; set; }
 
-        public OutArgument<long> Z { get; set; }//client code accesses Z through Execute.
+        /// <summary>
+        /// This is compiled however useless since there's no interface to access since the dictionary is unavailable to the output.
+        /// So in production codes, OutArgument should not be defined.
+        /// </summary>
+        public OutArgument<long> Z { get; set; }
 
     }
 }
