@@ -402,6 +402,13 @@ namespace BasicTests
 
         }
 
+        [Fact]
+        public void TestAsyncFileWriter()
+        {
+            var a = new AsyncFileWriter();
+            var r = WorkflowInvoker.Invoke(a);
+        }
+
 
     }
 }
