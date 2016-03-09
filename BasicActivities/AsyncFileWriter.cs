@@ -14,10 +14,18 @@ namespace Fonlow.Activities
             : base()
         {
         }
+
+        /// <summary>
+        /// When implemented in a derived class and using the specified execution context, callback method, and user state, enqueues an asynchronous activity in a run-time workflow.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="callback"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         protected override IAsyncResult BeginExecute(AsyncCodeActivityContext context, AsyncCallback callback, object state)
         {
             string tempFileName = Path.GetTempFileName();
-            Console.WriteLine("Writing to file: " + tempFileName);
+            System.Diagnostics.Debug.WriteLine("Writing to file: " + tempFileName);
 
             FileStream file = File.Open(tempFileName, FileMode.Create);
 
@@ -38,6 +46,7 @@ namespace Fonlow.Activities
             finally
             {
                 file.Close();
+                System.Diagnostics.Debug.WriteLine("Finished writing file");
             }
         }
     }

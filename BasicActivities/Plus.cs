@@ -37,15 +37,23 @@ namespace Fonlow.Activities
             return r;
         }
 
+        [RequiredArgument]//https://msdn.microsoft.com/en-us/library/ee358733%28v=vs.110%29.aspx
         public InArgument<int> X { get; set; }
 
+        [RequiredArgument]
         public InArgument<int> Y { get; set; }
 
         /// <summary>
-        /// This is compiled however useless since there's no interface to access since the dictionary is unavailable to the output.
-        /// So in production codes, OutArgument should not be defined.
+        /// This is compiled however in production codes, OutArgument should not be defined.
         /// </summary>
         public OutArgument<long> Z { get; set; }
 
+    }
+
+    public class Person
+    {
+        public string Surname { get; set; }
+
+        public string GivenName { get; set; }
     }
 }

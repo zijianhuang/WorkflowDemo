@@ -7,6 +7,7 @@ using Xunit;
 using Fonlow.Activities;
 using System.Activities;
 using System.Activities.Expressions;
+using System.Threading;
 
 namespace BasicTests
 {
@@ -26,6 +27,35 @@ namespace BasicTests
         }
 
         [Fact]
+        public void TestPlusWithDicAsInput()
+        {
+            var a = new Plus();
+
+            var inputs = new Dictionary<string, object>()
+            {
+                {"X", 1 },
+                {"Y", 2 }
+            };
+
+            var dic = WorkflowInvoker.Invoke(a, inputs);
+            Assert.Equal(3, (int)dic["Z"]);
+        }
+
+        [Fact]
+        public void TestPlusWithDefaultValue()
+        {
+            var a = new Plus()
+            {
+                Y = 2, //X not assigned, thus will have the default value 0 when being invoked.
+            };
+
+            Assert.Null(a.X);
+            var dic = WorkflowInvoker.Invoke(a);
+            Assert.Equal(2, (int)dic["Z"]);
+            Assert.NotNull(a.X);
+        }
+
+        [Fact]
         public void TestMultiply()
         {
             var a = new Multiply()
@@ -36,6 +66,100 @@ namespace BasicTests
 
             var r = WorkflowInvoker.Invoke(a);
             Assert.Equal(6, r);
+        }
+
+
+        [Fact]
+        public void TestMultiplyMissingRequiredThrows()
+        {
+            var a = new Multiply()
+            {
+                //           X = 3,
+                Y = 2,
+            };
+
+            Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
+        }
+
+        public class ThrowSomething : CodeActivity
+        {
+            protected override void Execute(CodeActivityContext context)
+            {
+                throw new ArgumentException("nothing");
+            }
+        }
+
+        [Fact]
+        public void TestWorkflowApplicationCatchException()
+        {
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+            var a = new ThrowSomething();
+
+            var app = new WorkflowApplication(a);
+            bool exceptionHappened = false;
+            bool aborted = false;
+            int mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            int workFlowThreadId=-1;
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.IsType<ArgumentException>(e.UnhandledException);
+                exceptionHappened = true;
+                workFlowThreadId = Thread.CurrentThread.ManagedThreadId;
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                Assert.True(false);
+                syncEvent.Set();
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                aborted = true;
+                syncEvent.Set();
+            };
+            app.Run();
+            syncEvent.WaitOne();
+            Assert.True(exceptionHappened);
+            Assert.True(aborted);
+            Assert.NotEqual(mainThreadId, workFlowThreadId);
+        }
+
+        [Fact]
+        public void TestWorkflowApplicationNotCatchExceptionWhenValidatingArguments()
+        {
+            var a = new Multiply()
+            {
+                Y = 2,
+            };
+
+            var app = new WorkflowApplication(a);
+
+            //None of the handlers should be running
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                Assert.True(false);
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            Assert.Throws<ArgumentException>(() => app.Run());//exception occurs during validation and in the same thread of the caller.
+
         }
 
 
@@ -111,7 +235,7 @@ namespace BasicTests
                     }
 
                 },
-                
+
                 Implementation = () =>
                 {
                     Variable<int> t1 = new Variable<int>("t1");
@@ -141,8 +265,8 @@ namespace BasicTests
                         },
                     };
                     return s;
-                }, 
-                
+                },
+
 
             };
 
@@ -407,8 +531,93 @@ namespace BasicTests
         {
             var a = new AsyncFileWriter();
             var r = WorkflowInvoker.Invoke(a);
+            System.Diagnostics.Debug.WriteLine("AsyncFileWriter invoke");
+            //check the log file, AsyncFileWriter is not doing anything async. all run in the same thread. Probably 
         }
 
+        [Fact]
+        public void TestInvokeMethod()
+        {
+            var a = new InvokeMethod<string>()
+            {
+                MethodName = "GetSomething",
+                TargetType = this.GetType(),
+            };
 
+            var r = WorkflowInvoker.Invoke(a);//run in the same thread
+            System.Diagnostics.Debug.WriteLine("Something invoke");
+            Assert.Equal("Something", r);
+
+        }
+
+        [Fact]
+        public void TestInvokeMethodAsync()
+        {
+            var a = new InvokeMethod<string>()
+            {
+                MethodName = "GetSomething",
+                TargetType = this.GetType(),
+                RunAsynchronously = true,
+            };
+
+            var r = WorkflowInvoker.Invoke(a);//run in a new thread, however, wait for it finished.
+            System.Diagnostics.Debug.WriteLine("Something invoke");
+            Assert.Equal("Something", r);
+
+        }
+
+        public static string GetSomething()
+        {
+            System.Threading.Thread.Sleep(200);
+            System.Diagnostics.Debug.WriteLine("Something");
+            return "Something";
+        }
+
+        [Fact]
+        public void TestOverloadGroupThrows()
+        {
+            var a = new CreateLocation()
+            {
+                Latitude = 100,
+                Longitude = 200,
+                Street = "abc"
+            };
+
+            Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
+        }
+    }
+
+
+    public class CreateLocation : Activity
+    {
+        [RequiredArgument]
+        public InArgument<string> Name { get; set; }
+
+        public InArgument<string> Description { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G1")]
+        public InArgument<int> Latitude { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G1")]
+        public InArgument<int> Longitude { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G2")]
+        [OverloadGroup("G3")]
+        public InArgument<string> Street { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G2")]
+        public InArgument<string> City { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G2")]
+        public InArgument<string> State { get; set; }
+
+        [RequiredArgument]
+        [OverloadGroup("G3")]
+        public InArgument<int> Zip { get; set; }
     }
 }
