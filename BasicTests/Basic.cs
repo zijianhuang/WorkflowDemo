@@ -14,7 +14,7 @@ namespace BasicTests
     public class Basic
     {
         [Fact]
-        public void TestPlus()
+        public void TestPlusWithDicOutput()
         {
             var a = new Plus()
             {
@@ -27,7 +27,7 @@ namespace BasicTests
         }
 
         [Fact]
-        public void TestPlusWithDicAsInput()
+        public void TestPlusWithDicInput()
         {
             var a = new Plus();
 
@@ -56,7 +56,7 @@ namespace BasicTests
         }
 
         [Fact]
-        public void TestMultiply()
+        public void TestMultiplyWithTypedOutput()
         {
             var a = new Multiply()
             {
@@ -110,7 +110,7 @@ namespace BasicTests
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
-                Assert.True(false);
+                Assert.True(false, "Never completed");
                 syncEvent.Set();
             };
 
@@ -158,7 +158,7 @@ namespace BasicTests
                 Assert.True(false);
             };
 
-            Assert.Throws<ArgumentException>(() => app.Run());//exception occurs during validation and in the same thread of the caller.
+            Assert.Throws<ArgumentException>(() => app.Run());//exception occurs during validation and in the same thread of the caller, before any activity runs.
 
         }
 
