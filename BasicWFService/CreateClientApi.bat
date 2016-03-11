@@ -1,0 +1,4 @@
+:: generate wsdl. Run this when there's a breaking change in the interface. You still need to be careful about interface versioning.
+::"C:\Program Files (x86)\IIS Express\iisexpress.exe" /site:"BasicWFService" /apppool:"Clr4IntegratedAppPool" /config:"C:\VsProjects\FonlowWorkflowDemo\.vs\config\applicationhost.config"
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\Bin\NETFX 4.5.1 Tools\svcutil.exe" http://localhost:3065/Service1.xamlx?singleWsdl /noConfig /language:C# /n:http://fonlow.com/WorkflowDemo,Fonlow.WorkflowDemo.Clients /directory:..\BasicWFServiceClientApi /out:WFServiceClientApiAuto.cs
+pause
