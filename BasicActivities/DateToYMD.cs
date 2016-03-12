@@ -41,9 +41,6 @@ namespace Fonlow.Activities
         protected override YMD Execute(CodeActivityContext context)
         {
             var v = Date.Get(context);
-            //Y.Set(context, v.Year);
-            //M.Set(context, v.Month);
-            //D.Set(context, v.Day);
             return new YMD()
             {
                 Y = v.Year,
@@ -54,11 +51,6 @@ namespace Fonlow.Activities
 
         public InArgument<DateTime> Date { get; set; }
 
-        //public OutArgument<int> Y { get; set; }
-
-        //public OutArgument<int> M { get; set; }
-
-        //public OutArgument<int> D { get; set; }
     }
 
 
@@ -88,19 +80,10 @@ namespace Fonlow.Activities
         protected override Tuple<int, int, int> Execute(CodeActivityContext context)
         {
             var v = Date.Get(context);
-            //Y.Set(context, v.Year);
-            //M.Set(context, v.Month);
-            //D.Set(context, v.Day);
             return new Tuple<int, int, int>(v.Year, v.Month, v.Day);
         }
 
         public InArgument<DateTime> Date { get; set; }
-
-        //public OutArgument<int> Y { get; set; }
-
-        //public OutArgument<int> M { get; set; }
-
-        //public OutArgument<int> D { get; set; }
     }
 
 }
