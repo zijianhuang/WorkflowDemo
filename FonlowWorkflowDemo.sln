@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicWFServiceClientApi", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{45632662-B8E8-4932-A471-0CAD1A0880F0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4C717E38-EDFB-4C8F-8149-770DBDB561A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C94ACF69-4BFC-485B-A24E-FA9EE7497C37} = {4C717E38-EDFB-4C8F-8149-770DBDB561A2}
+		{45632662-B8E8-4932-A471-0CAD1A0880F0} = {4C717E38-EDFB-4C8F-8149-770DBDB561A2}
 	EndGlobalSection
 EndGlobal

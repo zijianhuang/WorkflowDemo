@@ -19,7 +19,7 @@ namespace BasicTests
             var a = new Plus()
             {
                 X = 1,
-                Y = 2,
+                Y = new InArgument<int>(2),
             };
 
             var dic = WorkflowInvoker.Invoke(a);
@@ -55,6 +55,7 @@ namespace BasicTests
             Assert.NotNull(a.X);
         }
 
+
         [Fact]
         public void TestMultiplyWithTypedOutput()
         {
@@ -81,14 +82,163 @@ namespace BasicTests
             Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
         }
 
-        public class ThrowSomething : CodeActivity
+        [Fact]
+        public void TestDateToYMD1()
         {
-            protected override void Execute(CodeActivityContext context)
+            var a = new DateToYMD1()
             {
-                throw new ArgumentException("nothing");
-            }
+                Date = new DateTime(2016, 12, 23)
+            };
+            var dic = WorkflowInvoker.Invoke(a);
+            Assert.Equal(2016, (int)dic["Y"]);
+            Assert.Equal(12, (int)dic["M"]);
+            Assert.Equal(23, (int)dic["D"]);
+
         }
 
+        [Fact]
+        public void TestDateToYMD2()
+        {
+            var a = new DateToYMD2()
+            {
+                Date = new DateTime(2016, 12, 23)
+            };
+            var r = WorkflowInvoker.Invoke(a);
+            Assert.Equal(2016, r.Y);
+            Assert.Equal(12, r.M);
+            Assert.Equal(23, r.D);
+        }
+
+        [Fact]
+        public void TestDateToYMD3()
+        {
+            var a = new DateToYMD3()
+            {
+                Date = new DateTime(2016, 12, 23)
+            };
+            var r = WorkflowInvoker.Invoke(a);
+            Assert.Equal(2016, r.Item1);
+            Assert.Equal(12, r.Item2);
+            Assert.Equal(23, r.Item3);
+        }
+
+
+
+        [Fact]
+        public void TestMultiplyGeneric()
+        {
+            var a = new System.Activities.Expressions.Multiply<long, long, long>()
+            {
+                Left = 100,
+                Right = 200,
+            };
+
+            var r = WorkflowInvoker.Invoke(a);
+            Assert.Equal(20000L, r);
+
+        }
+
+        /// <summary>
+        /// Multiply want all types the same.
+        /// </summary>
+        [Fact]
+        public void TestMultiplyGenericThrows()
+        {
+            Assert.Throws<InvalidWorkflowException>(() =>
+            {
+                var a = new System.Activities.Expressions.Multiply<int, int, long>()
+                {
+                    Left = 100,
+                    Right = 200,
+                };
+
+                var r = WorkflowInvoker.Invoke(a);
+            });
+
+        }
+
+        /// <summary>
+        /// Multiply<> want all types the same. It seem either bug or design defect. If not bug, then it is better of to have 1 generic type.
+        /// </summary>
+        [Fact]
+        public void TestMultiplyGenericThrows2()
+        {
+            Assert.Throws<InvalidWorkflowException>(() =>
+            {
+                var a = new System.Activities.Expressions.Multiply<int, long, long>()
+                {
+                    Left = 100,
+                    Right = 200L,
+                };
+
+                var r = WorkflowInvoker.Invoke(a);
+            });
+
+        }
+
+        [Fact]
+        public void TestAsyncFileWriter()
+        {
+            var a = new AsyncFileWriter();
+            var r = WorkflowInvoker.Invoke(a);
+            System.Diagnostics.Debug.WriteLine("AsyncFileWriter invoke");
+            //check the log file, AsyncFileWriter is not doing anything async. all run in the same thread. Probably 
+        }
+
+        [Fact]
+        public void TestOverloadGroup()
+        {
+            var a = new QuerySql()
+            {
+                ConnectionString="cccc",
+            };
+
+            var r= WorkflowInvoker.Invoke(a);
+            
+        }
+        [Fact]
+        public void TestOverloadGroupWithBothGroupsAssignedThrows()
+        {
+            var a = new QuerySql()
+            {
+                ConnectionString = "cccc",
+                Host="localhost"
+            };
+
+            Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
+        }
+    }
+
+
+    public class QuerySql : CodeActivity
+    {
+
+        [RequiredArgument]
+        [OverloadGroup("G1")]
+        public InArgument<string> ConnectionString { get; set; }
+
+
+        [RequiredArgument]
+        [OverloadGroup("G2")]
+        public InArgument<string> Host { get; set; }
+
+        [OverloadGroup("G2")]
+        public InArgument<string> Database { get; set; }
+
+        [OverloadGroup("G2")]
+        public InArgument<string> User { get; set; }
+
+        [OverloadGroup("G2")]
+        public InArgument<string> Password { get; set; }
+
+        protected override void Execute(CodeActivityContext context)
+        {
+            //do nothing here
+        }
+    }
+
+    public class WorkflowApplicationTests
+    {
         [Fact]
         public void TestWorkflowApplicationCatchException()
         {
@@ -99,7 +249,7 @@ namespace BasicTests
             bool exceptionHappened = false;
             bool aborted = false;
             int mainThreadId = Thread.CurrentThread.ManagedThreadId;
-            int workFlowThreadId=-1;
+            int workFlowThreadId = -1;
             app.OnUnhandledException = (e) =>
             {
                 Assert.IsType<ArgumentException>(e.UnhandledException);
@@ -163,47 +313,18 @@ namespace BasicTests
         }
 
 
-        [Fact]
-        public void TestDateToYMD1()
+    }
+
+    public class ThrowSomething : CodeActivity
+    {
+        protected override void Execute(CodeActivityContext context)
         {
-            var a = new DateToYMD1()
-            {
-                Date = new DateTime(2016, 12, 23)
-            };
-            var dic = WorkflowInvoker.Invoke(a);
-            Assert.Equal(2016, (int)dic["Y"]);
-            Assert.Equal(12, (int)dic["M"]);
-            Assert.Equal(23, (int)dic["D"]);
-
+            throw new ArgumentException("nothing");
         }
+    }
 
-        [Fact]
-        public void TestDateToYMD2()
-        {
-            var a = new DateToYMD2()
-            {
-                Date = new DateTime(2016, 12, 23)
-            };
-            var r = WorkflowInvoker.Invoke(a);
-            Assert.Equal(2016, r.Y);
-            Assert.Equal(12, r.M);
-            Assert.Equal(23, r.D);
-        }
-
-        [Fact]
-        public void TestDateToYMD4()
-        {
-            var a = new DateToYMD4()
-            {
-                Date = new DateTime(2016, 12, 23)
-            };
-            var r = WorkflowInvoker.Invoke(a);
-            Assert.Equal(2016, r.Item1);
-            Assert.Equal(12, r.Item2);
-            Assert.Equal(23, r.Item3);
-        }
-
-
+    public class DynamicActivityTests
+    {
         [Fact]
         public void TestDynamicActivity()
         {
@@ -474,67 +595,10 @@ namespace BasicTests
             Assert.Equal(20000L, r);
         }
 
-        [Fact]
-        public void TestMultiplyGeneric()
-        {
-            var a = new System.Activities.Expressions.Multiply<long, long, long>()
-            {
-                Left = 100,
-                Right = 200,
-            };
+    }
 
-            var r = WorkflowInvoker.Invoke(a);
-            Assert.Equal(20000L, r);
-
-        }
-
-        /// <summary>
-        /// Multiply want all types the same.
-        /// </summary>
-        [Fact]
-        public void TestMultiplyGenericThrows()
-        {
-            Assert.Throws<InvalidWorkflowException>(() =>
-            {
-                var a = new System.Activities.Expressions.Multiply<int, int, long>()
-                {
-                    Left = 100,
-                    Right = 200,
-                };
-
-                var r = WorkflowInvoker.Invoke(a);
-            });
-
-        }
-
-        /// <summary>
-        /// Multiply<> want all types the same. It seem either bug or design defect. If not bug, then it is better of to have 1 generic type.
-        /// </summary>
-        [Fact]
-        public void TestMultiplyGenericThrows2()
-        {
-            Assert.Throws<InvalidWorkflowException>(() =>
-            {
-                var a = new System.Activities.Expressions.Multiply<int, long, long>()
-                {
-                    Left = 100,
-                    Right = 200L,
-                };
-
-                var r = WorkflowInvoker.Invoke(a);
-            });
-
-        }
-
-        [Fact]
-        public void TestAsyncFileWriter()
-        {
-            var a = new AsyncFileWriter();
-            var r = WorkflowInvoker.Invoke(a);
-            System.Diagnostics.Debug.WriteLine("AsyncFileWriter invoke");
-            //check the log file, AsyncFileWriter is not doing anything async. all run in the same thread. Probably 
-        }
-
+    public class InvokeMethodTest
+    {
         [Fact]
         public void TestInvokeMethod()
         {
@@ -573,51 +637,7 @@ namespace BasicTests
             return "Something";
         }
 
-        [Fact]
-        public void TestOverloadGroupThrows()
-        {
-            var a = new CreateLocation()
-            {
-                Latitude = 100,
-                Longitude = 200,
-                Street = "abc"
-            };
 
-            Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
-        }
     }
 
-
-    public class CreateLocation : Activity
-    {
-        [RequiredArgument]
-        public InArgument<string> Name { get; set; }
-
-        public InArgument<string> Description { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G1")]
-        public InArgument<int> Latitude { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G1")]
-        public InArgument<int> Longitude { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G2")]
-        [OverloadGroup("G3")]
-        public InArgument<string> Street { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G2")]
-        public InArgument<string> City { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G2")]
-        public InArgument<string> State { get; set; }
-
-        [RequiredArgument]
-        [OverloadGroup("G3")]
-        public InArgument<int> Zip { get; set; }
-    }
 }

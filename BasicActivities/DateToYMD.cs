@@ -54,28 +54,8 @@ namespace Fonlow.Activities
     }
 
 
-    public class DateToYMD3 : CodeActivity<YMD> //strongly typed with a data container class defined in advance
-    {
-        protected override YMD Execute(CodeActivityContext context)
-        {
-            var v = Date.Get(context);
-            var r= new YMD()
-            {
-                Y = v.Year,
-                M = v.Month,
-                D = v.Day
-            };
-            YMD.Set(context, r);
-            return r;
-        }
 
-        public InArgument<DateTime> Date { get; set; }
-
-        public OutArgument<YMD> YMD { get; set; }
-    }
-
-
-    public class DateToYMD4 : CodeActivity<Tuple<int, int, int>> //strongly typed with Tuple
+    public class DateToYMD3 : CodeActivity<Tuple<int, int, int>> //strongly typed with Tuple
     {
         protected override Tuple<int, int, int> Execute(CodeActivityContext context)
         {
