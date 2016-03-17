@@ -16,6 +16,7 @@ namespace Fonlow.Activities
         protected override void Execute(CodeActivityContext context)
         {
             Z.Set(context, X.Get(context) + Y.Get(context));
+            System.Diagnostics.Debug.WriteLine("Plus Done");
         }
 
         public InArgument<int> X { get; set; }
@@ -34,6 +35,7 @@ namespace Fonlow.Activities
         {
             var r= X.Get(context) * Y.Get(context);
             Z.Set(context, r);
+            System.Diagnostics.Debug.WriteLine("Multiply done");
             return r;
         }
 

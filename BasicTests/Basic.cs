@@ -177,15 +177,6 @@ namespace BasicTests
         }
 
         [Fact]
-        public void TestAsyncFileWriter()
-        {
-            var a = new AsyncFileWriter();
-            var r = WorkflowInvoker.Invoke(a);
-            System.Diagnostics.Debug.WriteLine("AsyncFileWriter invoke");
-            //check the log file, AsyncFileWriter is not doing anything async. all run in the same thread. Probably 
-        }
-
-        [Fact]
         public void TestOverloadGroup()
         {
             var a = new QuerySql()
@@ -608,7 +599,7 @@ namespace BasicTests
                 TargetType = this.GetType(),
             };
 
-            var r = WorkflowInvoker.Invoke(a);//run in the same thread
+            var r = WorkflowInvoker.Invoke(a);//method GetSomething() run in the same thread
             System.Diagnostics.Debug.WriteLine("Something invoke");
             Assert.Equal("Something", r);
 
@@ -630,6 +621,32 @@ namespace BasicTests
 
         }
 
+        [Fact]
+        public void TestInvokeMethodAsyncInApplication()
+        {
+            var a = new InvokeMethod<string>()
+            {
+                MethodName = "GetSomething",
+                TargetType = this.GetType(),
+                RunAsynchronously = true,
+            };
+
+            var s = new System.Activities.Statements.Sequence()
+            {
+                Activities = {
+                    new Plus() {X=2, Y=3 },
+                    a,
+                    new Multiply() {X=3, Y=7 },
+                },
+            };
+
+
+            var r = WorkflowInvoker.Invoke(s);
+            System.Diagnostics.Debug.WriteLine("Something invoke");
+            //So all run in sequences. The async activity is not being executed in fire and forget style, but probably just good not freezing the UI thread if UI is involved.
+
+        }
+
         public static string GetSomething()
         {
             System.Threading.Thread.Sleep(200);
@@ -637,6 +654,79 @@ namespace BasicTests
             return "Something";
         }
 
+
+    }
+
+    public class AsyncCodeActivityTests
+    {
+        [Fact]
+        public void TestAsyncDoSomethingInSequence()
+        {
+            System.Diagnostics.Debug.WriteLine("Before AsyncDoSomething in Sequence invoke");
+            var a = new AsyncDoSomething();
+            var s = new System.Activities.Statements.Sequence()
+            {
+                Activities = {
+                    new Plus() {X=2, Y=3 },
+                    a,
+                    new Multiply() {X=3, Y=7 },
+                },
+            };
+
+            var r = WorkflowInvoker.Invoke(s);
+            System.Diagnostics.Debug.WriteLine("After AsyncDoSomething in Sequence invoke");
+            //check the log file, the invoker will just run 3 activities one by one, and waiting for a to finish, though the key function of a is running in a new thread
+        }
+
+        [Fact]
+        public void TestAsyncDoSomething()
+        {
+            System.Diagnostics.Debug.WriteLine("Before AsyncDoSomething invoke");
+            var a = new AsyncDoSomething();
+            var r = WorkflowInvoker.Invoke(a);
+            System.Diagnostics.Debug.WriteLine("After AsyncDoSomething invoke");
+            //check the log file, BeginExecute and EndExecute run in the caller thread.
+        }
+
+        [Fact]
+        public void TestAsyncDoSomethingInApplication()
+        {
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+            var a = new AsyncDoSomething();
+            var s = new System.Activities.Statements.Sequence()
+            {
+                Activities = {
+                    new Plus() {X=2, Y=3 },
+                    a,
+                    new Multiply() {X=3, Y=7 },
+                },
+            };
+
+
+            var app = new WorkflowApplication(s);
+            int mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            int workFlowThreadId = -1;
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.IsType<ArgumentException>(e.UnhandledException);
+                workFlowThreadId = Thread.CurrentThread.ManagedThreadId;
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                System.Diagnostics.Debug.WriteLine("Completed");
+                syncEvent.Set();
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                syncEvent.Set();
+            };
+            app.Run();
+            syncEvent.WaitOne();
+            Assert.NotEqual(mainThreadId, workFlowThreadId);
+        }
 
     }
 
