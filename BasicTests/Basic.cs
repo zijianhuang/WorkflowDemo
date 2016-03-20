@@ -181,11 +181,11 @@ namespace BasicTests
         {
             var a = new QuerySql()
             {
-                ConnectionString="cccc",
+                ConnectionString = "cccc",
             };
 
-            var r= WorkflowInvoker.Invoke(a);
-            
+            var r = WorkflowInvoker.Invoke(a);
+
         }
         [Fact]
         public void TestOverloadGroupWithBothGroupsAssignedThrows()
@@ -193,7 +193,7 @@ namespace BasicTests
             var a = new QuerySql()
             {
                 ConnectionString = "cccc",
-                Host="localhost"
+                Host = "localhost"
             };
 
             Assert.Throws<ArgumentException>(() => WorkflowInvoker.Invoke(a));
@@ -298,7 +298,7 @@ namespace BasicTests
             {
                 Assert.True(false);
             };
-
+            
             Assert.Throws<ArgumentException>(() => app.Run());//exception occurs during validation and in the same thread of the caller, before any activity runs.
 
         }
@@ -314,286 +314,12 @@ namespace BasicTests
         }
     }
 
-    public class DynamicActivityTests
-    {
-        [Fact]
-        public void TestDynamicActivity()
-        {
-            var x = 100;
-            var y = 200;
-            var a = new DynamicActivity
-            {
-                DisplayName = "Dynamic Plus",
-                Properties =
-                {
-                    new DynamicActivityProperty()
-                    {
-                        Name="XX",
-                        Type= typeof(InArgument<int>),
-                        //Value=x, //This must not be done. Otherwise, System.InvalidCastException : Unable to cast object of type 'System.Int32' to type 'System.Activities.Argument'
-                        //The MSDN example is not working at least in WF 4.5. 
-
-                    },
-                    new DynamicActivityProperty()
-                    {
-                        Name="YY",
-                        Type=typeof(InArgument<int>),
-                        //Value=y,
-                    },
-                    new DynamicActivityProperty()
-                    {
-                        Name="ZZ",
-                        Type=typeof(OutArgument<int>),
-                    }
-
-                },
-
-                Implementation = () =>
-                {
-                    Variable<int> t1 = new Variable<int>("t1");
-
-                    var plus = new Plus()
-                    {
-                        X = new ArgumentValue<int>() { ArgumentName = "XX" },
-                        Y = new ArgumentValue<int>() { ArgumentName = "YY" },
-                        Z = t1,
-                    };
-
-                    var s = new System.Activities.Statements.Sequence()
-                    {
-                        Variables =
-                        {
-                            t1
-                        },
-                        Activities = {
-                            plus,
-
-                            new System.Activities.Statements.Assign<int>
-                            {
-                                To = new ArgumentReference<int> { ArgumentName = "ZZ" },
-                                Value = new InArgument<int>(env=> t1.Get(env)),
-                            },
-
-                        },
-                    };
-                    return s;
-                },
-
-
-            };
-
-            var dic = new Dictionary<string, object>();
-            dic.Add("XX", x);
-            dic.Add("YY", y);
-
-            var r = WorkflowInvoker.Invoke(a, dic);
-            //          var r = WorkflowInvoker.Invoke(a);
-            Assert.Equal(300, (int)r["ZZ"]);
-        }
-
-        [Fact]
-        public void TestDynamicActivityGeneric()
-        {
-            var x = 100;
-            var y = 200;
-            var a = new DynamicActivity<int>
-            {
-                DisplayName = "Dynamic Plus",
-                Properties =
-                {
-                    new DynamicActivityProperty()
-                    {
-                        Name="XX",
-                        Type= typeof(InArgument<int>),
-
-                    },
-                    new DynamicActivityProperty()
-                    {
-                        Name="YY",
-                        Type=typeof(InArgument<int>),
-                    },
-
-                },
-
-                Implementation = () =>
-                {
-                    var t1 = new Variable<int>("t1");
-
-                    var plus = new Plus()
-                    {
-                        X = new ArgumentValue<int>() { ArgumentName = "XX" },
-                        Y = new ArgumentValue<int>() { ArgumentName = "YY" },
-                        Z = t1,
-                    };
-                    var s = new System.Activities.Statements.Sequence()
-                    {
-                        Variables =
-                        {
-                            t1
-                        },
-                        Activities = {
-                            plus,
-                            new System.Activities.Statements.Assign<int>
-                            {
-                                To = new ArgumentReference<int> { ArgumentName="Result" },//I just had a good guess about how Result get assigned.
-                                Value = new InArgument<int>(env=> t1.Get(env)),
-                            },
-
-
-                        },
-                    };
-                    return s;
-                },
-
-
-            };
-
-            var dic = new Dictionary<string, object>();
-            dic.Add("XX", x);
-            dic.Add("YY", y);
-
-            var r = WorkflowInvoker.Invoke(a, dic);
-            Assert.Equal(300, r);
-        }
-
-        [Fact]
-        public void TestDynamicActivityGenericWithResult()
-        {
-            var x = 100;
-            var y = 200;
-            var a = new DynamicActivity<long>
-            {
-                DisplayName = "Dynamic Plus",
-                Properties =
-                {
-                    new DynamicActivityProperty()
-                    {
-                        Name="XX",
-                        Type= typeof(InArgument<int>),
-
-                    },
-                    new DynamicActivityProperty()
-                    {
-                        Name="YY",
-                        Type=typeof(InArgument<int>),
-                    },
-
-                },
-
-                Implementation = () =>
-                {
-                    var t1 = new Variable<long>("t1");
-
-                    var multiply = new Multiply()
-                    {
-                        X = new ArgumentValue<int>() { ArgumentName = "XX" },
-                        Y = new ArgumentValue<int>() { ArgumentName = "YY" },
-                        Result = t1,
-                    };
-                    var s = new System.Activities.Statements.Sequence()
-                    {
-                        Variables =
-                        {
-                            t1
-                        },
-                        Activities = {
-                            multiply,
-                            new System.Activities.Statements.Assign<long>
-                            {
-                                To = new ArgumentReference<long> { ArgumentName="Result" },//I just had a good guess about how Result get assigned.
-                                Value = new InArgument<long>(env=> t1.Get(env)),
-                            },
-
-
-                        },
-                    };
-                    return s;
-                },
-
-
-            };
-
-            var dic = new Dictionary<string, object>();
-            dic.Add("XX", x);
-            dic.Add("YY", y);
-
-            var r = WorkflowInvoker.Invoke(a, dic);
-            Assert.Equal(20000, r);
-        }
-
-        [Fact]
-        public void TestDynamicActivityGenericWithGeneric()
-        {
-            var x = 100;
-            var y = 200;
-            var a = new DynamicActivity<long>
-            {
-                DisplayName = "Dynamic Multiply",
-                Properties =
-                {
-                    new DynamicActivityProperty()
-                    {
-                        Name="XX",
-                        Type= typeof(InArgument<long>),
-
-                    },
-                    new DynamicActivityProperty()
-                    {
-                        Name="YY",
-                        Type=typeof(InArgument<long>),
-                    },
-
-                },
-
-                Implementation = () =>
-                {
-                    var t1 = new Variable<long>("t1");
-
-                    var multiply = new System.Activities.Expressions.Multiply<long, long, long>()
-                    {
-                        Left = new ArgumentValue<long>() { ArgumentName = "XX" },
-                        Right = new ArgumentValue<long>() { ArgumentName = "YY" },
-                        Result = t1,
-                    };
-                    var s = new System.Activities.Statements.Sequence()
-                    {
-                        Variables =
-                        {
-                            t1
-                        },
-                        Activities = {
-                            multiply,
-                            new System.Activities.Statements.Assign<long>
-                            {
-                                To = new ArgumentReference<long> { ArgumentName="Result" },
-                                Value = new InArgument<long>(env=> t1.Get(env)),
-                            },
-
-
-                        },
-                    };
-                    return s;
-                },
-
-
-            };
-
-            var dic = new Dictionary<string, object>();
-            dic.Add("XX", x);
-            dic.Add("YY", y);
-
-            var r = WorkflowInvoker.Invoke(a, dic);
-            Assert.Equal(20000L, r);
-        }
-
-    }
-
     public class InvokeMethodTest
     {
         [Fact]
-        public void TestInvokeMethod()
+        public void TestInvokeStaticMethod()
         {
-            var a = new InvokeMethod<string>()
+            var a = new InvokeMethod<int>()
             {
                 MethodName = "GetSomething",
                 TargetType = this.GetType(),
@@ -601,14 +327,13 @@ namespace BasicTests
 
             var r = WorkflowInvoker.Invoke(a);//method GetSomething() run in the same thread
             System.Diagnostics.Debug.WriteLine("Something invoke");
-            Assert.Equal("Something", r);
-
+            Assert.Equal(System.Threading.Thread.CurrentThread.ManagedThreadId, r);
         }
 
         [Fact]
-        public void TestInvokeMethodAsync()
+        public void TestInvokeStaticMethodAsync()
         {
-            var a = new InvokeMethod<string>()
+            var a = new InvokeMethod<int>()
             {
                 MethodName = "GetSomething",
                 TargetType = this.GetType(),
@@ -617,42 +342,55 @@ namespace BasicTests
 
             var r = WorkflowInvoker.Invoke(a);//run in a new thread, however, wait for it finished.
             System.Diagnostics.Debug.WriteLine("Something invoke");
-            Assert.Equal("Something", r);
+            Assert.NotEqual(System.Threading.Thread.CurrentThread.ManagedThreadId, r);
 
         }
 
         [Fact]
-        public void TestInvokeMethodAsyncInApplication()
+        public void TestInvokeStaticMethodAsyncInSequence()
         {
-            var a = new InvokeMethod<string>()
+            var t1 = new Variable<int>("t1");
+            var a = new InvokeMethod<int>()
             {
                 MethodName = "GetSomething",
                 TargetType = this.GetType(),
                 RunAsynchronously = true,
+                Result = t1,
             };
 
             var s = new System.Activities.Statements.Sequence()
             {
+                Variables = { t1 },
                 Activities = {
                     new Plus() {X=2, Y=3 },
                     a,
                     new Multiply() {X=3, Y=7 },
                 },
+                
             };
 
-
-            var r = WorkflowInvoker.Invoke(s);
+            
+            var r = WorkflowInvoker.Invoke(s); 
             System.Diagnostics.Debug.WriteLine("Something invoke");
             //So all run in sequences. The async activity is not being executed in fire and forget style, but probably just good not freezing the UI thread if UI is involved.
 
         }
 
-        public static string GetSomething()
+        public static int GetSomething()
         {
             System.Threading.Thread.Sleep(200);
             System.Diagnostics.Debug.WriteLine("Something");
-            return "Something";
+            return System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
+
+        public string DoSomething()
+        {
+            System.Threading.Thread.Sleep(200);
+            System.Diagnostics.Debug.WriteLine("DoSomething");
+            return "DoSomething";
+
+        }
+
 
 
     }
