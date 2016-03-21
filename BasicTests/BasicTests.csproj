@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Basic.cs" />
     <Compile Include="DynamicActivityTests.cs" />
+    <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="Persistence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
