@@ -15,7 +15,7 @@ namespace BasicTests
 {
 
 
-    public class Persistence
+    public class PersistenceTests
     {
         [Fact]
         public void TestPersistenceNoPersistableIdle()
@@ -284,7 +284,6 @@ namespace BasicTests
         [Fact]
         public void TestPersistenceSqlWithDelay()
         {
-            const string readLineBookmark = "ReadLine1";
             var x = 100;
             var y = 200;
             var t1 = new Variable<int>("t1");
@@ -402,7 +401,7 @@ namespace BasicTests
 
             var dt = DateTime.Now;
             syncEvent.WaitOne();
-            Assert.True((DateTime.Now - dt).TotalSeconds > 2);
+            Assert.True((DateTime.Now - dt).TotalSeconds > 2);//But if the long running process is fired and forgot, the late load and run may be completed immediately.
 
             Assert.True(completed2);
             Assert.True(unloaded2);
