@@ -15,11 +15,6 @@ namespace BasicTests
     public class InvokeDelegateTests
     {
         [Fact]
-        public void TestActivityAction()
-        {
-        }
-
-        [Fact]
         public void TestActivityDelegate()
         {
             var da1 = new DelegateInArgument<int>();
@@ -43,10 +38,18 @@ namespace BasicTests
             var r = WorkflowInvoker.Invoke(a);
             Assert.Equal(21, r);
         }
+
+
     }
 
+    /// <summary>
+    /// This activity expects and external activity with certain signature.
+    /// </summary>
     public class MyCallbakActivity : Activity<long>
     {
+        /// <summary>
+        /// Activity delegate
+        /// </summary>
         public ActivityFunc<int, int, long> Callback { get; set; }
 
         public InArgument<int> XX { get; set; }
@@ -61,14 +64,16 @@ namespace BasicTests
                 Variables = { v },
                 Activities =
                 {
+                    //To wrap the activity delegate
                     new InvokeFunc<int, int, long>
                     {
                         Func=Callback,
-                        Argument1= new InArgument<int>(env=>XX.Get(env)),
+                        Argument1= new InArgument<int>(env=>XX.Get(env)),//Must wire with local InArgument this way.
                         Argument2= new InArgument<int>(env=>YY.Get(env)),
-                        Result= v,
+                        Result=  v, //buffer the callback Result in v
                     },
 
+                    //To wire the callback Result with the local Result.
                     new Assign<long>
                     {
                         To=new ArgumentReference<long> { ArgumentName="Result" },
