@@ -29,6 +29,8 @@ namespace BasicTests
 
                 Assert.Throws<InvalidOperationException>(()
                     => host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), ""));
+
+                Assert.Equal(CommunicationState.Created, host.State);
             }
         }
 
@@ -37,10 +39,10 @@ namespace BasicTests
         {
             // Create service host.
             WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress));
-            
 
-                // Add service endpoint.
-                host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
+
+            // Add service endpoint.
+            host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
 
             SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WFXXX; Integrated Security = SSPI");
             instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
@@ -56,6 +58,35 @@ namespace BasicTests
             Assert.NotNull(ex.InnerException);
             Assert.Equal(typeof(System.Runtime.DurableInstancing.InstancePersistenceCommandException), ex.InnerException.GetType());
             Assert.Equal(CommunicationState.Faulted, host.State);//so can't be disposed.
+        }
+
+        [Fact]
+        public void TestOpenHost()
+        {
+            // Create service host.
+            WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress));
+
+
+            // Add service endpoint.
+            host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
+
+            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
+            instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
+            instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
+            instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
+            instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
+            instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
+            host.Description.Behaviors.Add(instanceStoreBehavior);
+
+            host.Open(TimeSpan.FromSeconds(2));
+            Assert.Equal(CommunicationState.Opened, host.State);
+
+
+            // Create a client that sends a message to create an instance of the workflow.
+            ICountingWorkflow client = ChannelFactory<ICountingWorkflow>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
+            client.start();
+
+            host.Close();
         }
     }
 

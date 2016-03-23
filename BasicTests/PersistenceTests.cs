@@ -18,63 +18,6 @@ namespace BasicTests
     public class PersistenceTests
     {
         [Fact]
-        public void TestPersistenceNoPersistableIdle()
-        {
-            var a = new Multiply()
-            {
-                X = 3,
-                Y = 7,
-            };
-
-
-            bool unloaded = false;
-            bool completed = false;
-
-            AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = PersistenceXXX; Integrated Security = SSPI");//no invoked, Lazy
-
-            var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
-            app.PersistableIdle = (eventArgs) =>
-            {
-                Assert.True(false, "quick action no need to persist");//lazy
-                return PersistableIdleAction.Persist;
-            };
-
-            //None of the handlers should be running
-            app.OnUnhandledException = (e) =>
-            {
-                Assert.True(false);
-                return UnhandledExceptionAction.Abort;
-            };
-
-            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
-            {
-                completed = true;
-                syncEvent.Set();
-            };
-
-            app.Aborted = (eventArgs) =>
-            {
-                Assert.True(false);
-            };
-
-            app.Unloaded = (eventArgs) =>
-            {
-                unloaded = true;
-                Assert.True(true);
-            };
-
-            app.Run();
-            Assert.False(completed);
-            Assert.False(unloaded);
-            syncEvent.WaitOne();
-
-            Assert.True(completed);
-            Assert.False(unloaded);
-        }
-
-        [Fact]
         public void TestPersistenceSqlWithBookmark()
         {
             const string readLineBookmark = "ReadLine1";
@@ -226,7 +169,6 @@ namespace BasicTests
             var ex = Assert.Throws<System.Runtime.DurableInstancing.InstancePersistenceCommandException>
                (() => app.Persist(TimeSpan.FromSeconds(2)));
 
-            //System.Threading.Thread.Sleep(100);
             Assert.NotNull(ex.InnerException);
             Assert.Equal(typeof(TimeoutException), ex.InnerException.GetType());
         }
@@ -280,6 +222,62 @@ namespace BasicTests
         }
 
 
+        [Fact]
+        public void TestPersistenceWithNoPersistableIdle()
+        {
+            var a = new Multiply()
+            {
+                X = 3,
+                Y = 7,
+            };
+
+
+            bool unloaded = false;
+            bool completed = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = PersistenceXXX; Integrated Security = SSPI");//no invoked, Lazy
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                Assert.True(false, "quick action no need to persist");//lazy
+                return PersistableIdleAction.Persist;
+            };
+
+            //None of the handlers should be running
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                completed = true;
+                syncEvent.Set();
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded = true;
+                Assert.True(true);
+            };
+
+            app.Run();
+            Assert.False(completed);
+            Assert.False(unloaded);
+            syncEvent.WaitOne();
+
+            Assert.True(completed);
+            Assert.False(unloaded);
+        }
 
         [Fact]
         public void TestPersistenceSqlWithDelay()
@@ -396,7 +394,6 @@ namespace BasicTests
 
             app2.Load(instanceId);
 
-            //this resumes the bookmark setup by readline
             app2.Run();
 
             var dt = DateTime.Now;
