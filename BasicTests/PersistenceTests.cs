@@ -20,7 +20,7 @@ namespace BasicTests
     public class PersistenceTests
     {
         [Fact]
-        public void TestPersistenceSqlWithBookmark()
+        public void TestPersistenceWithBookmark()
         {
             const string readLineBookmark = "ReadLine1";
             var x = 100;
@@ -54,17 +54,9 @@ namespace BasicTests
             bool unloaded1 = false;
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-
-            #region optional?
-            var handle = store.CreateInstanceHandle();
-            var view = store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
-            handle.Free();
-            store.DefaultInstanceOwner = view.InstanceOwner;
-            #endregion
 
             var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
                 return PersistableIdleAction.Unload;//so persist and unload
@@ -97,15 +89,15 @@ namespace BasicTests
             var id = app.Id;
             app.Run();
             syncEvent.WaitOne();
-
+            
             Assert.False(completed1);
             Assert.True(unloaded1);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndComplete(a, store, id, readLineBookmark);
+            LoadAndComplete(a, id, readLineBookmark);
         }
 
-        static void LoadAndComplete(Activity workflowDefinition, System.Runtime.DurableInstancing.InstanceStore store,  Guid instanceId, string bookmarkName)
+        static void LoadAndComplete(Activity workflowDefinition, Guid instanceId, string bookmarkName)
         {
             bool completed2 = false;
             bool unloaded2 = false;
@@ -124,7 +116,7 @@ namespace BasicTests
                     syncEvent.Set();
                 },
 
-                InstanceStore = store,
+                InstanceStore = NewStore(),
             };
 
             var input = "Something";//The condition is met
@@ -137,7 +129,7 @@ namespace BasicTests
 
             Assert.True(completed2);
             Assert.True(unloaded2);
-           
+
         }
 
         [Fact]
@@ -151,10 +143,9 @@ namespace BasicTests
 
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = PersistenceXXX; Integrated Security = SSPI");
 
             var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
+            app.InstanceStore = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WFXXX; Integrated Security = SSPI");
             app.PersistableIdle = (eventArgs) =>
             {
                 Assert.True(false, "quick action no need to persist");//lazy
@@ -186,10 +177,9 @@ namespace BasicTests
 
             bool completed1 = false;
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
 
             var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
                 Assert.True(false, "quick action no need to persist");//lazy
@@ -208,7 +198,7 @@ namespace BasicTests
                 completed1 = true;
                 syncEvent.Set();
             };
-
+            
             app.Unloaded = (e) =>
             {
                 Assert.True(false, "Nothing to persist");
@@ -238,10 +228,9 @@ namespace BasicTests
             bool completed = false;
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = PersistenceXXX; Integrated Security = SSPI");//no invoked, Lazy
 
             var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
                 Assert.True(false, "quick action no need to persist");//lazy
@@ -301,6 +290,12 @@ namespace BasicTests
                             t1
                         },
                 Activities = {
+                      new Multiply()
+                    {
+                        X=3,
+                        Y=7,
+                    },
+
                             new System.Activities.Statements.Delay()
                             {
                                 Duration= TimeSpan.FromSeconds(3),
@@ -315,17 +310,9 @@ namespace BasicTests
             bool unloaded1 = false;
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-
-            #region optional?
-            var handle = store.CreateInstanceHandle();
-            var view = store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
-            handle.Free();
-            store.DefaultInstanceOwner = view.InstanceOwner;
-            #endregion
 
             var app = new WorkflowApplication(a);
-            app.InstanceStore = store;
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
                 return PersistableIdleAction.Unload;//so persist and unload
@@ -353,7 +340,7 @@ namespace BasicTests
                 unloaded1 = true;
                 syncEvent.Set();
             };
-            
+
             //  app.Persist();
             var id = app.Id;
             var stopwatch = new Stopwatch();
@@ -369,10 +356,10 @@ namespace BasicTests
             Assert.True(unloaded1);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndCompleteLongRunning(a, store, id);
+            LoadAndCompleteLongRunning(a, id);
         }
 
-        static void LoadAndCompleteLongRunning(Activity workflowDefinition, System.Runtime.DurableInstancing.InstanceStore store, Guid instanceId)
+        static void LoadAndCompleteLongRunning(Activity workflowDefinition, Guid instanceId)
         {
             bool completed2 = false;
             bool unloaded2 = false;
@@ -391,7 +378,7 @@ namespace BasicTests
                     syncEvent.Set();
                 },
 
-                InstanceStore = store,
+                InstanceStore = NewStore(),
             };
 
             app2.Load(instanceId);
@@ -409,11 +396,9 @@ namespace BasicTests
 
 
 
-
         [Fact]
-        public void TestPersistenceSqlWithBookmark2()
+        public void TestPersistenceSqlWithActivityPersistedInStream()
         {
-            const string readLineBookmark = "ReadLine1";
             var x = 100;
             var y = 200;
             var t1 = new Variable<int>("t1");
@@ -431,9 +416,9 @@ namespace BasicTests
                             t1
                         },
                 Activities = {
-                            new ReadLine()
+                            new System.Activities.Statements.Delay()
                             {
-                                BookmarkName=readLineBookmark,
+                                Duration= TimeSpan.FromSeconds(3),
                             },
                             plus,
 
@@ -445,23 +430,14 @@ namespace BasicTests
             bool unloaded1 = false;
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-
-            #region optional?
-            var handle = store.CreateInstanceHandle();
-            var view = store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
-            handle.Free();
-            store.DefaultInstanceOwner = view.InstanceOwner;
-            #endregion
-
             WorkflowIdentity identity = new WorkflowIdentity()
             {
-                Name="MyDemoWorkflow",
-                Version= new Version(1, 0, 0),
+                Name = "MyDemoWorkflow" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+                Version = new Version(1, 0, 0),
             };
 
             var app = new WorkflowApplication(a, identity);
-            app.InstanceStore = store;
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
                 return PersistableIdleAction.Unload;//so persist and unload
@@ -500,18 +476,24 @@ namespace BasicTests
 
 
             var stream = new MemoryStream();
-            ActivityPersistenceHelper.SaveActivity(a, "MyDemoSequence", stream);
+            ActivityPersistenceHelper.SaveActivity(a, stream);
             stream.Position = 0;
+
+            File.WriteAllBytes(@"c:\test\activity.xml", stream.ToArray());
+
+
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndComplete2(stream, store, id, readLineBookmark, identity);
+            LoadAndComplete2(stream, id, identity);
         }
 
-        static void LoadAndComplete2(Stream wfStream, System.Runtime.DurableInstancing.InstanceStore store, Guid instanceId, string bookmarkName, WorkflowIdentity identity)
+        static void LoadAndComplete2(Stream wfStream, Guid instanceId, WorkflowIdentity identity)
         {
             bool completed2 = false;
             bool unloaded2 = false;
             AutoResetEvent syncEvent = new AutoResetEvent(false);
             var workflowDefinition = ActivityPersistenceHelper.LoadActivity(wfStream);
+            wfStream.Dispose();
+
             var app2 = new WorkflowApplication(workflowDefinition, identity)
             {
                 Completed = e =>
@@ -525,7 +507,125 @@ namespace BasicTests
                     syncEvent.Set();
                 },
 
-                InstanceStore = store,
+                InstanceStore = NewStore(),
+            };
+
+            app2.Load(instanceId);
+
+            //this resumes the bookmark setup by readline
+            app2.Run();
+            syncEvent.WaitOne();
+
+            Assert.True(completed2);
+            Assert.True(unloaded2);
+
+        }
+
+
+        [Fact]
+        public void TestPersistenceSqlWithBookmarkWithActivityPersistedInStream()
+        {
+            const string readLineBookmark = "ReadLine1";
+            var x = 100;
+            var y = 200;
+            var t1 = new Variable<int>("t1");
+
+            var plus = new Plus()
+            {
+                X = x,
+                Y = y,
+                Z = t1,  //So Output Z will be assigned to t1
+            };
+            var a = new System.Activities.Statements.Sequence()
+            {
+                Variables =
+                        {
+                            t1
+                        },
+                Activities = {
+                            new ReadLine()
+                            {
+                                BookmarkName=readLineBookmark,
+                            },
+                            plus,
+
+                        },
+            };
+
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.Unload;//so persist and unload
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                unloaded1 = true;
+                Assert.True(false);
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded1 = true;
+                syncEvent.Set();
+            };
+
+            //  app.Persist();
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            MemoryStream stream = new MemoryStream();
+            ActivityPersistenceHelper.SaveActivity(a, stream);
+            stream.Position = 0;
+
+            WFDefinitionStore.Instance.InstanceDefinitions.TryAdd(id, stream.ToArray());
+            //Now to use a new WorkflowApplication to load the persisted instance.
+            LoadAndComplete3(id, readLineBookmark);
+        }
+
+        static void LoadAndComplete3(Guid instanceId, string bookmarkName)
+        {
+            bool completed2 = false;
+            bool unloaded2 = false;
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var workflowDefinition = ActivityPersistenceHelper.LoadActivity(WFDefinitionStore.Instance.InstanceDefinitions[instanceId]);
+            var app2 = new WorkflowApplication(workflowDefinition)
+            {
+                Completed = e =>
+                {
+                    completed2 = true;
+                },
+
+                Unloaded = e =>
+                {
+                    unloaded2 = true;
+                    syncEvent.Set();
+                },
+
+                InstanceStore = NewStore(),
             };
 
             var input = "Something";//The condition is met
@@ -539,10 +639,27 @@ namespace BasicTests
             Assert.True(completed2);
             Assert.True(unloaded2);
 
+            byte[] temp;
+            WFDefinitionStore.Instance.InstanceDefinitions.TryRemove(instanceId, out temp);
+
         }
 
 
+        static System.Runtime.DurableInstancing.InstanceStore NewStore()
+        {
+            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI")
+            {
+                InstanceCompletionAction= InstanceCompletionAction.DeleteAll,
+                InstanceEncodingOption= InstanceEncodingOption.GZip,
+                
+            };
 
+            var handle = store.CreateInstanceHandle();
+            var view = store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
+            handle.Free();
+            store.DefaultInstanceOwner = view.InstanceOwner;
+            return store;
+        }
 
     }
 }
