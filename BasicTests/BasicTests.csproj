@@ -85,6 +85,10 @@
       <Project>{bcc3bed6-f4cf-45c8-81bf-0166d0698535}</Project>
       <Name>BasicActivities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fonlow.Workflow.Persistence\Fonlow.Workflow.Persistence.csproj">
+      <Project>{116fab86-5681-4b2e-ba3c-d242c5800aab}</Project>
+      <Name>Fonlow.Workflow.Persistence</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
