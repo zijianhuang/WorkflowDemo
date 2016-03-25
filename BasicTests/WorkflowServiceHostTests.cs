@@ -74,13 +74,13 @@ namespace BasicTests
             // Add service endpoint.
             host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
 
-            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-            instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-            instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-            instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-            instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-            instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
-            host.Description.Behaviors.Add(instanceStoreBehavior);
+            //SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
+            //instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
+            //instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
+            //instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
+            //instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
+            //instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
+            //host.Description.Behaviors.Add(instanceStoreBehavior);
 
             host.Open(TimeSpan.FromSeconds(2));
             Assert.Equal(CommunicationState.Opened, host.State);

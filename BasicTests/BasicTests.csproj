@@ -74,6 +74,7 @@
     <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="PersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkflowApplicationTests.cs" />
     <Compile Include="WorkflowServiceHostTests.cs" />
   </ItemGroup>
   <ItemGroup>
