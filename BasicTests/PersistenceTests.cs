@@ -341,7 +341,7 @@ namespace BasicTests
                 syncEvent.Set();
             };
 
-            //  app.Persist();
+            app.Persist();  //so the Delay instance will be persisted. Otherwise, Delay will run then persist.
             var id = app.Id;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -350,22 +350,24 @@ namespace BasicTests
             syncEvent.WaitOne();
 
             stopwatch.Stop();
-//            Assert.True(stopwatch.ElapsedMilliseconds < 500, "The activity will take over 2 seconds however will be persisted and unloaded righ away.");
+            Assert.True(stopwatch.ElapsedMilliseconds < 500, "The activity will take over 2 seconds however will be persisted and unloaded righ away.");
 
             Assert.False(completed1);
             Assert.True(unloaded1);
 
+            var t=   WFDefinitionStore.Instance.TryAdd(id, a);
+
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndCompleteLongRunning(a, id);
+            LoadAndCompleteLongRunning(id);
         }
 
-        static void LoadAndCompleteLongRunning(Activity workflowDefinition, Guid instanceId)
+        static void LoadAndCompleteLongRunning(Guid instanceId)
         {
             bool completed2 = false;
             bool unloaded2 = false;
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
-            var app2 = new WorkflowApplication(workflowDefinition)
+            var app2 = new WorkflowApplication(WFDefinitionStore.Instance[instanceId])
             {
                 Completed = e =>
                 {
@@ -387,7 +389,7 @@ namespace BasicTests
 
             var dt = DateTime.Now;
             syncEvent.WaitOne();
- //           Assert.True((DateTime.Now - dt).TotalSeconds > 2);//But if the long running process is fired and forgot, the late load and run may be completed immediately.
+            Assert.True((DateTime.Now - dt).TotalSeconds > 2);//But if the long running process is fired and forgot, the late load and run may be completed immediately.
 
             Assert.True(completed2);
             Assert.True(unloaded2);
