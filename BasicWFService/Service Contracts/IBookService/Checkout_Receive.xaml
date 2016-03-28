@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ActivityTemplateFactory x:Class="IBookService.Checkout_Receive" x:TypeArguments="p1:Receive" xmlns="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation/toolbox" xmlns:b="clr-namespace:BasicWFService;assembly=BasicWFService" xmlns:p="http://fonlow.com/WorkflowDemo" xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <p1:Receive Action="http://fonlow.com/WorkflowDemo/IBookService/Checkout" DisplayName="Checkout_Receive" OperationName="Checkout" ProtectionLevel="None" ServiceContractName="p:IBookService">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Type Type="b:IBookService" x:Key="contractType" />
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <p1:ReceiveParametersContent />
+  </p1:Receive>
+</ActivityTemplateFactory>

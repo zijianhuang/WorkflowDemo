@@ -32,6 +32,21 @@ namespace Fonlow.Activities
 
         public System.Runtime.DurableInstancing.InstanceStore Store { get; private set; }
 
+        public bool TryAdd(Guid instanceId, Activity a)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                ActivityPersistenceHelper.SaveActivity(a, stream);
+                stream.Position = 0;
+                return InstanceDefinitions.TryAdd(instanceId, stream.ToArray());
+            }
+
+        }
+
+        public Activity this[Guid id] { get
+            {
+                return ActivityPersistenceHelper.LoadActivity(WFDefinitionStore.Instance.InstanceDefinitions[id]);
+            } }
     }
 
     /// <summary>

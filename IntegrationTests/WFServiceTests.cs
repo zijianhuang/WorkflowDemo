@@ -16,7 +16,7 @@ namespace IntegrationTests
         const string realWorldEndpoint = "DefaultBinding_Workflow";
 
         [Fact]
-        public void TestReceive()
+        public void TestGetData()
         {
             using (var client = new WorkflowProxy(realWorldEndpoint))
             {
