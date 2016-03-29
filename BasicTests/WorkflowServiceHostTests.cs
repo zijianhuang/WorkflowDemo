@@ -101,4 +101,15 @@ namespace BasicTests
         void start();
     }
 
+
+    [ServiceContract(Namespace ="http://fonlow.com/workflowdemo/")]
+    public interface ICalculation
+    {
+        [OperationContract(IsOneWay = true)]
+        void MultiplyXY(int parameter1, int parameter2);
+
+        [OperationContract]
+        long GetLateResult();
+    }
+
 }

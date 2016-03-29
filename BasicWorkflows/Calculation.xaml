@@ -1,5 +1,6 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.Calculation" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="Fonlow.Activities.Calculation_1"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.Calculation"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicActivities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
@@ -8,6 +9,13 @@
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="Result" Type="OutArgument(x:Int64)" />
+    <x:Property Name="XX" Type="InArgument(x:Int32)" />
+    <x:Property Name="YY" Type="InArgument(x:Int32)" />
+  </x:Members>
+  <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
+  <sap2010:WorkflowViewState.IdRef>Fonlow.Activities.Calculation_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System</x:String>
@@ -30,8 +38,9 @@
       <AssemblyReference>System.Xaml</AssemblyReference>
       <AssemblyReference>System.Xml</AssemblyReference>
       <AssemblyReference>System.Xml.Linq</AssemblyReference>
-      <AssemblyReference>mscorlib</AssemblyReference>
       <AssemblyReference>BasicActivities</AssemblyReference>
+      <AssemblyReference>SillyHelpers</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
       <AssemblyReference>BasicWorkflows</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
@@ -40,7 +49,25 @@
       <Variable x:TypeArguments="x:Int32" Name="plusResult" />
       <Variable x:TypeArguments="x:Int64" Name="m1" />
       <Variable x:TypeArguments="x:Int64" Name="m2" />
+      <Variable x:TypeArguments="x:Int64" Name="fake" />
     </Sequence.Variables>
+    <fa:Multiply Z="{x:Null}" sap2010:WorkflowViewState.IdRef="Multiply_1">
+      <fa:Multiply.Result>
+        <OutArgument x:TypeArguments="x:Int64">
+          <mca:CSharpReference x:TypeArguments="x:Int64">fake</mca:CSharpReference>
+        </OutArgument>
+      </fa:Multiply.Result>
+      <fa:Multiply.X>
+        <InArgument x:TypeArguments="x:Int32">
+          <mca:CSharpValue x:TypeArguments="x:Int32">XX</mca:CSharpValue>
+        </InArgument>
+      </fa:Multiply.X>
+      <fa:Multiply.Y>
+        <InArgument x:TypeArguments="x:Int32">
+          <mca:CSharpValue x:TypeArguments="x:Int32">YY</mca:CSharpValue>
+        </InArgument>
+      </fa:Multiply.Y>
+    </fa:Multiply>
     <If sap2010:WorkflowViewState.IdRef="If_2">
       <If.Condition>
         <InArgument x:TypeArguments="x:Boolean">
@@ -74,12 +101,30 @@
         </Sequence>
       </If.Else>
     </If>
-    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sDSYDTg4CAQEsBUwKAgECLwsvWQIBAzMJRRQCAQpICUoUAgEHOAtEEAIBC0kLSWQCAQg7ETtWAgEMPw8/XQIBFEIPQmQCARJJSUlhAgEJP00/WgIBFUJNQmECARM=</sads:DebugSymbol.Symbol>
+    <Delay sap2010:WorkflowViewState.IdRef="Delay_1">
+      <InArgument x:TypeArguments="x:TimeSpan">
+        <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(3)</mca:CSharpValue>
+      </InArgument>
+    </Delay>
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Int64">
+          <mca:CSharpReference x:TypeArguments="x:Int64">Result</mca:CSharpReference>
+        </OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Int64">
+          <mca:CSharpValue x:TypeArguments="x:Int64">fake</mca:CSharpValue>
+        </InArgument>
+      </Assign.Value>
+    </Assign>
+    <sads:DebugSymbol.Symbol>d0BDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sFi8Deg4CAQE2BUYTAgE4RwVnCgIBHGgFbA0CARNtBXgOAgECOQs5VAIBST4LPkoCAUFDC0NKAgE5SgtKWQIBHU4JYBQCAShjCWUUAgElaglqYAIBFHULdUwCAQtwC3BWAgEDUwtfEAIBKWQLZGQCASZWEVZWAgEqWg9aXQIBNl0PXWQCATRkSWRhAgEnWk1aWgIBN11NXWECATU=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="211,62" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Multiply_1" sap:VirtualizedContainerService.HintSize="743,22" />
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="210,62" />
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="210,62" />
       <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,212" />
       <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,336">
         <sap:WorkflowViewStateService.ViewState>
@@ -88,23 +133,25 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="211,62" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="233,186">
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="210,62" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="232,186">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="744,486" />
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="766,610">
+      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="743,486" />
+      <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="743,22" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="743,62" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="765,836">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Fonlow.Activities.Calculation_1" sap:VirtualizedContainerService.HintSize="806,690" />
+      <sap2010:ViewStateData Id="Fonlow.Activities.Calculation_1" sap:VirtualizedContainerService.HintSize="805,916" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

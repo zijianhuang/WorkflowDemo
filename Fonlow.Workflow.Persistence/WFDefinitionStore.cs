@@ -43,6 +43,17 @@ namespace Fonlow.Activities
 
         }
 
+        public bool TryAdd<T>(Guid instanceId, ActivityBuilder<T> ab)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                ActivityPersistenceHelper.SaveActivity(ab, stream);
+                stream.Position = 0;
+                return InstanceDefinitions.TryAdd(instanceId, stream.ToArray());
+            }
+
+        }
+
         public Activity this[Guid id] { get
             {
                 return ActivityPersistenceHelper.LoadActivity(WFDefinitionStore.Instance.InstanceDefinitions[id]);
@@ -67,6 +78,15 @@ namespace Fonlow.Activities
             using (var xw = ActivityXamlServices.CreateBuilderWriter(new System.Xaml.XamlXmlWriter(streamWriter, new System.Xaml.XamlSchemaContext())))
             {
                 System.Xaml.XamlServices.Save(xw, activity);
+            }
+        }
+
+        public static void SaveActivity<T>(ActivityBuilder<T> ab, Stream stream)
+        {
+            using (var streamWriter = new StreamWriter(stream, Encoding.UTF8, 512, true))
+            using (var xw = ActivityXamlServices.CreateBuilderWriter(new System.Xaml.XamlXmlWriter(streamWriter, new System.Xaml.XamlSchemaContext())))
+            {
+                System.Xaml.XamlServices.Save(xw, ab);
             }
         }
 

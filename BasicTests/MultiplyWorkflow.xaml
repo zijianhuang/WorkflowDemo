@@ -1,0 +1,167 @@
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="BasicTests.MultiplyWorkflow" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="BasicTests.MultiplyWorkflow_1"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicWorkflows"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
+ xmlns:p="http://fonlow.com/workflowdemo/"
+ xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Essential.Diagnostics</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Activities.DurableInstancing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Runtime.DurableInstancing</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>Microsoft.CSharp</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Net.Http</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>xunit.abstractions</AssemblyReference>
+      <AssemblyReference>xunit.assert</AssemblyReference>
+      <AssemblyReference>xunit.core</AssemblyReference>
+      <AssemblyReference>xunit.execution.desktop</AssemblyReference>
+      <AssemblyReference>BasicActivities</AssemblyReference>
+      <AssemblyReference>BasicWorkflows</AssemblyReference>
+      <AssemblyReference>Fonlow.Workflow.Persistence</AssemblyReference>
+      <AssemblyReference>SillyHelpers</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>BasicTests</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:Int64" Name="zz" />
+    </Sequence.Variables>
+    <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="p1:CorrelationHandle" x:Name="__ReferenceID0" Name="__handle1" />
+        <Variable x:TypeArguments="x:Int32" Name="x" />
+        <Variable x:TypeArguments="x:Int32" Name="y" />
+        <Variable x:TypeArguments="x:Int64" Name="z" />
+      </Sequence.Variables>
+      <p1:Receive CanCreateInstance="True" sap2010:WorkflowViewState.IdRef="Receive_1" OperationName="MultiplyXY" ServiceContractName="p:ICalculation">
+        <p1:Receive.CorrelationInitializers>
+          <p1:RequestReplyCorrelationInitializer>
+            <p1:RequestReplyCorrelationInitializer.CorrelationHandle>
+              <InArgument x:TypeArguments="p1:CorrelationHandle">
+                <VariableValue x:TypeArguments="p1:CorrelationHandle" Variable="{x:Reference __ReferenceID0}" />
+              </InArgument>
+            </p1:RequestReplyCorrelationInitializer.CorrelationHandle>
+          </p1:RequestReplyCorrelationInitializer>
+        </p1:Receive.CorrelationInitializers>
+        <p1:ReceiveParametersContent>
+          <OutArgument x:TypeArguments="x:Int32" x:Key="parameter1">
+            <mca:CSharpReference x:TypeArguments="x:Int32">x</mca:CSharpReference>
+          </OutArgument>
+          <OutArgument x:TypeArguments="x:Int32" x:Key="parameter2">
+            <mca:CSharpReference x:TypeArguments="x:Int32">y</mca:CSharpReference>
+          </OutArgument>
+        </p1:ReceiveParametersContent>
+      </p1:Receive>
+      <fa:Calculation sap2010:WorkflowViewState.IdRef="Calculation_1">
+        <fa:Calculation.Result>
+          <OutArgument x:TypeArguments="x:Int64">
+            <mca:CSharpReference x:TypeArguments="x:Int64">zz</mca:CSharpReference>
+          </OutArgument>
+        </fa:Calculation.Result>
+        <fa:Calculation.XX>
+          <InArgument x:TypeArguments="x:Int32">
+            <mca:CSharpValue x:TypeArguments="x:Int32">x</mca:CSharpValue>
+          </InArgument>
+        </fa:Calculation.XX>
+        <fa:Calculation.YY>
+          <InArgument x:TypeArguments="x:Int32">
+            <mca:CSharpValue x:TypeArguments="x:Int32">y</mca:CSharpValue>
+          </InArgument>
+        </fa:Calculation.YY>
+      </fa:Calculation>
+    </Sequence>
+    <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="p1:CorrelationHandle" Name="__handle1" />
+      </Sequence.Variables>
+      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_4">
+        <Sequence.Variables>
+          <Variable x:TypeArguments="p1:CorrelationHandle" x:Name="__ReferenceID1" Name="__handle2" />
+        </Sequence.Variables>
+        <p1:Receive x:Name="__ReferenceID2" sap2010:WorkflowViewState.IdRef="Receive_3" OperationName="GetLateResult" ServiceContractName="p:ICalculation">
+          <p1:Receive.CorrelationInitializers>
+            <p1:RequestReplyCorrelationInitializer>
+              <p1:RequestReplyCorrelationInitializer.CorrelationHandle>
+                <InArgument x:TypeArguments="p1:CorrelationHandle">
+                  <VariableValue x:TypeArguments="p1:CorrelationHandle" Variable="{x:Reference __ReferenceID1}" />
+                </InArgument>
+              </p1:RequestReplyCorrelationInitializer.CorrelationHandle>
+            </p1:RequestReplyCorrelationInitializer>
+          </p1:Receive.CorrelationInitializers>
+        </p1:Receive>
+        <p1:SendReply Request="{x:Reference __ReferenceID2}" DisplayName="SendReplyToReceive" sap2010:WorkflowViewState.IdRef="SendReply_1">
+          <p1:SendParametersContent>
+            <InArgument x:TypeArguments="x:Int64" x:Key="p_result">
+              <mca:CSharpValue x:TypeArguments="x:Int64">zz</mca:CSharpValue>
+            </InArgument>
+          </p1:SendParametersContent>
+        </p1:SendReply>
+      </Sequence>
+    </Sequence>
+    <sads:DebugSymbol.Symbol>d0FDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1Rlc3RzXE11bHRpcGx5V29ya2Zsb3cueGFtbBA0A4EBDgIBATgFYxACAQ1kBX8QAgECPwdRFAIBIVIHYhgCAQ5oB34SAgEDTg1OUwIBKUsNS1MCASNEEURxAgEiXw1fSwIBG1oNWksCARVVDVVUAgEPbAl2FgIBC3cJfRgCAQRxE3FzAgEMeg96TgIBBQ==</sads:DebugSymbol.Symbol>
+  </Sequence>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="Receive_1" sap:VirtualizedContainerService.HintSize="255,86" />
+      <sap2010:ViewStateData Id="Calculation_1" sap:VirtualizedContainerService.HintSize="255,22" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="299,272">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Receive_3" sap:VirtualizedContainerService.HintSize="255,86" />
+      <sap2010:ViewStateData Id="SendReply_1" sap:VirtualizedContainerService.HintSize="255,86" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="277,336">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="299,460">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="321,896">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="BasicTests.MultiplyWorkflow_1" sap:VirtualizedContainerService.HintSize="361,976" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>
