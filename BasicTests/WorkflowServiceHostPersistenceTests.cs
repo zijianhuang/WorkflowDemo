@@ -59,7 +59,7 @@ namespace BasicTests
         public void TestMultiplyXY()
         {
             // Create service host.
-            WorkflowServiceHost host = new WorkflowServiceHost(new BasicTests.MultiplyWorkflow(), new Uri(hostBaseAddress));
+            WorkflowServiceHost host = new WorkflowServiceHost(new Fonlow.Activites.MultiplyWorkflow(), new Uri(hostBaseAddress));
 
 
             // Add service endpoint.

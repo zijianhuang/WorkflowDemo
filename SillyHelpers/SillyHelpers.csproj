@@ -45,6 +45,7 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringHelper.cs" />
+    <Compile Include="TraceWriter.cs" />
     <Compile Include="TriangleHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,6 +26,12 @@ namespace Fonlow.Activities
                 InstanceEncodingOption = InstanceEncodingOption.GZip,
 
             };
+
+            var handle = Store.CreateInstanceHandle();
+            var view = Store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
+            handle.Free();
+            Store.DefaultInstanceOwner = view.InstanceOwner;
+
         }
 
         public System.Collections.Concurrent.ConcurrentDictionary<Guid, byte[]> InstanceDefinitions { get; private set; }

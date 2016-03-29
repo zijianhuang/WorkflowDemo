@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 
-namespace BasicTests
+namespace Fonlow.Utilities
 {
     public class TraceWriter : TextWriter
     {

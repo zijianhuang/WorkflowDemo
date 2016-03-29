@@ -19,6 +19,14 @@ namespace BasicTests
 
     public class PersistenceTests
     {
+        public PersistenceTests()
+        {
+            stopwatch = new Stopwatch();
+            stopwatch2 = new Stopwatch();
+        }
+
+        Stopwatch stopwatch, stopwatch2;
+
         [Fact]
         public void TestPersistenceWithBookmark()
         {
@@ -89,7 +97,7 @@ namespace BasicTests
             var id = app.Id;
             app.Run();
             syncEvent.WaitOne();
-            
+
             Assert.False(completed1);
             Assert.True(unloaded1);
 
@@ -116,7 +124,7 @@ namespace BasicTests
                     syncEvent.Set();
                 },
 
-                InstanceStore = NewStore(),
+                InstanceStore = WFDefinitionStore.Instance.Store,
             };
 
             var input = "Something";//The condition is met
@@ -198,7 +206,7 @@ namespace BasicTests
                 completed1 = true;
                 syncEvent.Set();
             };
-            
+
             app.Unloaded = (e) =>
             {
                 Assert.True(false, "Nothing to persist");
@@ -271,7 +279,7 @@ namespace BasicTests
         }
 
         [Fact]
-        public void TestPersistenceSqlWithDelay()
+        public void TestPersistenceWithDelayAndResult()
         {
             var a = new Fonlow.Activities.Calculation();
             a.XX = 3;
@@ -312,29 +320,29 @@ namespace BasicTests
                 syncEvent.Set();
             };
 
-            app.Persist();  //so the Delay instance will be persisted. Otherwise, Delay will run then persist.
-            //However, without this Persist(), the test case is running well together with other cases.
-
             var id = app.Id;
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
+            stopwatch.Restart();
+            stopwatch2.Restart();
             app.Run();
             syncEvent.WaitOne();
 
             stopwatch.Stop();
-            Assert.True(stopwatch.ElapsedMilliseconds < 500, "The activity will take over 2 seconds however will be persisted and unloaded righ away.");
+            Assert.True(stopwatch.ElapsedMilliseconds < 2500, String.Format("The first one is executed for {0} milliseconds", stopwatch.ElapsedMilliseconds));
+            //the ellipsed time depends on the performance of the WF runtime when handling persistence. The first case of persistence is slow.
 
             Assert.False(completed1);
             Assert.True(unloaded1);
 
-            var t=   WFDefinitionStore.Instance.TryAdd(id, a);
+            stopwatch.Restart();
+            var t = WFDefinitionStore.Instance.TryAdd(id, a);
+            stopwatch.Stop();
+            Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
             LoadAndCompleteLongRunning(id);
         }
 
-        static void LoadAndCompleteLongRunning(Guid instanceId)
+        void LoadAndCompleteLongRunning(Guid instanceId)
         {
             bool completed2 = false;
             bool unloaded2 = false;
@@ -355,16 +363,19 @@ namespace BasicTests
                     syncEvent.Set();
                 },
 
-                InstanceStore = NewStore(),
+                InstanceStore = WFDefinitionStore.Instance.Store,
             };
 
+            stopwatch.Restart();
             app2.Load(instanceId);
+            Trace.TraceInformation("It took {0} seconds to load workflow", stopwatch.Elapsed.TotalSeconds);
+
 
             app2.Run();
-
-            var dt = DateTime.Now;
             syncEvent.WaitOne();
-            Assert.True((DateTime.Now - dt).TotalSeconds > 2);//But if the long running process is fired and forgot, the late load and run may be completed immediately.
+            stopwatch2.Stop();
+            var seconds = stopwatch2.Elapsed.TotalSeconds;
+            Assert.True(seconds > 3, String.Format("Activity execute for {0} seconds", seconds));//But if the long running process is fired and forgot, the late load and run may be completed immediately.
 
             Assert.True(completed2);
             Assert.True(unloaded2);
@@ -372,144 +383,7 @@ namespace BasicTests
         }
 
 
-        [Fact]
-        public void TestPersistenceSqlWithBookmarkWithActivityPersistedInStream()
-        {
-            const string readLineBookmark = "ReadLine1";
-            var x = 100;
-            var y = 200;
-            var t1 = new Variable<int>("t1");
 
-            var plus = new Plus()
-            {
-                X = x,
-                Y = y,
-                Z = t1,  //So Output Z will be assigned to t1
-            };
-            var a = new System.Activities.Statements.Sequence()
-            {
-                Variables =
-                        {
-                            t1
-                        },
-                Activities = {
-                            new ReadLine()
-                            {
-                                BookmarkName=readLineBookmark,
-                            },
-                            plus,
-
-                        },
-            };
-
-
-            bool completed1 = false;
-            bool unloaded1 = false;
-
-            AutoResetEvent syncEvent = new AutoResetEvent(false);
-
-            var app = new WorkflowApplication(a);
-            app.InstanceStore = WFDefinitionStore.Instance.Store;
-            app.PersistableIdle = (eventArgs) =>
-            {
-                return PersistableIdleAction.Unload;//so persist and unload
-            };
-
-            app.OnUnhandledException = (e) =>
-            {
-                Assert.True(false);
-                return UnhandledExceptionAction.Abort;
-            };
-
-            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
-            {
-                unloaded1 = true;
-                Assert.True(false);
-            };
-
-            app.Aborted = (eventArgs) =>
-            {
-                Assert.True(false);
-            };
-
-            app.Unloaded = (eventArgs) =>
-            {
-                unloaded1 = true;
-                syncEvent.Set();
-            };
-
-            //  app.Persist();
-            var id = app.Id;
-            app.Run();
-            syncEvent.WaitOne();
-
-            Assert.False(completed1);
-            Assert.True(unloaded1);
-
-            MemoryStream stream = new MemoryStream();
-            ActivityPersistenceHelper.SaveActivity(a, stream);
-            stream.Position = 0;
-
-            WFDefinitionStore.Instance.InstanceDefinitions.TryAdd(id, stream.ToArray());
-            //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndComplete3(id, readLineBookmark);
-        }
-
-        static void LoadAndComplete3(Guid instanceId, string bookmarkName)
-        {
-            bool completed2 = false;
-            bool unloaded2 = false;
-            AutoResetEvent syncEvent = new AutoResetEvent(false);
-
-            var workflowDefinition = ActivityPersistenceHelper.LoadActivity(WFDefinitionStore.Instance.InstanceDefinitions[instanceId]);
-            var app2 = new WorkflowApplication(workflowDefinition)
-            {
-                Completed = e =>
-                {
-                    completed2 = true;
-                },
-
-                Unloaded = e =>
-                {
-                    unloaded2 = true;
-                    syncEvent.Set();
-                },
-
-                InstanceStore = NewStore(),
-            };
-
-            var input = "Something";//The condition is met
-            app2.Load(instanceId);
-
-            //this resumes the bookmark setup by readline
-            app2.ResumeBookmark(bookmarkName, input);
-
-            syncEvent.WaitOne();
-
-            Assert.True(completed2);
-            Assert.True(unloaded2);
-
-            byte[] temp;
-            WFDefinitionStore.Instance.InstanceDefinitions.TryRemove(instanceId, out temp);
-
-        }
-
-
-        static System.Runtime.DurableInstancing.InstanceStore NewStore()
-        {
-            var store = new SqlWorkflowInstanceStore("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI")
-            {
-                InstanceCompletionAction= InstanceCompletionAction.DeleteAll,
-                InstanceEncodingOption= InstanceEncodingOption.GZip,
-                
-            };
-
-            var handle = store.CreateInstanceHandle();
-            var view = store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
-            handle.Free();
-            store.DefaultInstanceOwner = view.InstanceOwner;
-            return store;
-        }
 
     }
 

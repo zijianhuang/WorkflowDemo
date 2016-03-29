@@ -56,6 +56,7 @@
       <x:String>System.Windows.Markup</x:String>
       <x:String>BasicTests</x:String>
       <x:String>System.IO</x:String>
+      <x:String>Fonlow.Utilities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -74,6 +75,7 @@
       <AssemblyReference>PresentationCore</AssemblyReference>
       <AssemblyReference>System.Xaml</AssemblyReference>
       <AssemblyReference>BasicTests</AssemblyReference>
+      <AssemblyReference>SillyHelpers</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces">
@@ -85,7 +87,7 @@
       <While.Condition>[counter &lt; 5]</While.Condition>
       <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
         <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
-          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Counter = &quot; + counter.ToString()]" TextWriter="[New BasicTests.TraceWriter()]" />
+          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Counter = &quot; + counter.ToString()]" TextWriter="[New Fonlow.Utilities.TraceWriter()]" />
           <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
             <Assign.To>
               <OutArgument x:TypeArguments="x:Int32">[counter]</OutArgument>
@@ -107,12 +109,12 @@
         </Assign>
       </Sequence>
     </While>
-    <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="[&quot;Counting completed&quot; + FinalResult.ToString()]" TextWriter="[New BasicTests.TraceWriter()]" />
-    <sads:DebugSymbol.Symbol>d0FDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1Rlc3RzXENvdW50aW5nV29ya2Zsb3cueGFtbBZPA3AOAgEBUAVQmAECAR1RBW0NAgEGbgVurQECAQJTNVM4AgEHVgdsEgIBClUYVSgCAQhuQ25+AgEEbooBbqoBAgEDVwljFAIBEGQJaxICAQtYC1inAQIBGVkLYBQCARRhC2FCAgETYgtiUgIBEWkzaTwCAQ5mNGZBAgEMWElYeAIBG1iEAVikAQIBGl41XkICARdbNls/AgEVYhtiJQIBEg==</sads:DebugSymbol.Symbol>
+    <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="[&quot;Counting completed&quot; + FinalResult.ToString()]" TextWriter="[New Fonlow.Utilities.TraceWriter()]" />
+    <sads:DebugSymbol.Symbol>d0VDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDb3VudGluZ1dvcmtmbG93LnhhbWwWUQNyDgIBAVIFUpgBAgEdUwVvDQIBBnAFcLMBAgECVTVVOAIBB1gHbhICAQpXGFcoAgEIcENwfgIBBHCKAXCwAQIBA1kJZRQCARBmCW0SAgELWgtarQECARlbC2IUAgEUYwtjQgIBE2QLZFICARFrM2s8AgEOaDRoQQIBDFpJWngCARtahAFaqgECARpgNWBCAgEXXTZdPwIBFWQbZCUCARI=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="Receive_1" sap:VirtualizedContainerService.HintSize="464,86" />
+      <sap2010:ViewStateData Id="Receive_1" sap:VirtualizedContainerService.HintSize="464,90" />
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="242,61" />
       <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="242,60" />
       <sap2010:ViewStateData Id="Persist_1" sap:VirtualizedContainerService.HintSize="242,22" />
@@ -134,14 +136,14 @@
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="While_1" sap:VirtualizedContainerService.HintSize="464,791" />
       <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="464,61" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="486,1142">
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="486,1146">
         <sap:WorkflowViewStateService.ViewState>
           <scg3:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg3:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Microsoft.Samples.BuiltInConfiguration.CountingWorkflow_1" sap:VirtualizedContainerService.HintSize="526,1222" />
+      <sap2010:ViewStateData Id="Microsoft.Samples.BuiltInConfiguration.CountingWorkflow_1" sap:VirtualizedContainerService.HintSize="526,1226" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
