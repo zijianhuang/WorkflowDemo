@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Activities;
 using System.ServiceModel.Activities.Description;
-using System.Diagnostics;
 
 namespace BasicTests
 {
