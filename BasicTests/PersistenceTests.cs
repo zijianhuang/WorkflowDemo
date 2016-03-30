@@ -708,13 +708,6 @@ namespace BasicTests
             Assert.True(completed1);
             Assert.False(unloaded1);
 
-            //stopwatch.Restart();
-            //var t = WFDefinitionStore.Instance.TryAdd(id, a);
-            //stopwatch.Stop();
-            //Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
-
-            ////Now to use a new WorkflowApplication to load the persisted instance.
-            //LoadAndCompleteLongRunning(id);
         }
 
 
