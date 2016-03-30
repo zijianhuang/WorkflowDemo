@@ -451,6 +451,7 @@ namespace BasicTests
             };
 
             bool completed1 = false;
+            bool isIdle = false;
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
             var app = new WorkflowApplication(a);
@@ -477,6 +478,11 @@ namespace BasicTests
             app.Unloaded = (e) =>
             {
                 Assert.True(false, "Nothing to persist");
+            };
+
+            app.Idle = e =>
+            {
+                Assert.True(false);
             };
 
             app.Persist();
@@ -649,6 +655,67 @@ namespace BasicTests
 
         }
 
+
+        [Fact]
+        public void TestPersistenceWithDelayAndResultButNoPersist()
+        {
+            var a = new Fonlow.Activities.Calculation();
+            a.XX = 3;
+            a.YY = 7;
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.None;
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                completed1 = true;
+                stopwatch.Stop();
+                Assert.True(stopwatch.Elapsed.TotalSeconds > 3 && stopwatch.Elapsed.TotalSeconds < 5);
+                syncEvent.Set();
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            var id = app.Id;
+            stopwatch.Restart();
+            app.Run();
+            syncEvent.WaitOne();
+
+
+            Assert.True(completed1);
+            Assert.False(unloaded1);
+
+            //stopwatch.Restart();
+            //var t = WFDefinitionStore.Instance.TryAdd(id, a);
+            //stopwatch.Stop();
+            //Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
+
+            ////Now to use a new WorkflowApplication to load the persisted instance.
+            //LoadAndCompleteLongRunning(id);
+        }
 
 
 
