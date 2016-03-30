@@ -7,6 +7,9 @@ using System.Activities;
 
 namespace Fonlow.Activities
 {
+    /// <summary>
+    /// Caller to provide a bookmark value and return BookmarkValue+"ABC"
+    /// </summary>
     public sealed class ReadLine : NativeActivity<string>
     {
         public ReadLine()
@@ -41,10 +44,10 @@ namespace Fonlow.Activities
 
             if (input == null)
             {
-                throw new ArgumentException(string.Format("ReadLine {0}: ReadLine must be resumed with a non-null string"), "state");
+                throw new ArgumentException("ReadLine {0}: ReadLine must be resumed with a non-null string");
             }
 
-            context.SetValue(base.Result, input);
+            context.SetValue(base.Result, input+"ABC");
         }
     }
 

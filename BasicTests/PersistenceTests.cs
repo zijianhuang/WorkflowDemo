@@ -27,10 +27,11 @@ namespace BasicTests
 
         Stopwatch stopwatch, stopwatch2;
 
+        const string readLineBookmark = "ReadLine1";
+
         [Fact]
         public void TestPersistenceWithBookmark()
         {
-            const string readLineBookmark = "ReadLine1";
             var x = 100;
             var y = 200;
             var t1 = new Variable<int>("t1");
@@ -56,6 +57,109 @@ namespace BasicTests
 
                         },
             };
+
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+            bool isIdle = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.Unload;//so persist and unload
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                unloaded1 = true;
+                Assert.True(false);
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded1 = true;
+                syncEvent.Set();
+            };
+
+            app.Idle = e =>
+            {
+                Assert.Equal(1, e.Bookmarks.Count);
+                isIdle = true;
+            };
+
+            //  app.Persist();
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+            Assert.True(isIdle);
+
+            //Now to use a new WorkflowApplication to load the persisted instance.
+            LoadAndComplete(a, id, readLineBookmark);
+        }
+
+        static IDictionary<string, object> LoadAndComplete(Activity workflowDefinition, Guid instanceId, string bookmarkName)
+        {
+            bool completed2 = false;
+            bool unloaded2 = false;
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+            IDictionary<string, object> outputs = null;
+
+            var app2 = new WorkflowApplication(workflowDefinition)
+            {
+                Completed = e =>
+                {
+                    if (e.CompletionState== ActivityInstanceState.Closed)
+                    {
+                        outputs = e.Outputs;
+                    }
+                    completed2 = true;
+                },
+
+                Unloaded = e =>
+                {
+                    unloaded2 = true;
+                    syncEvent.Set();
+                },
+
+                InstanceStore = WFDefinitionStore.Instance.Store,
+            };
+
+            var input = "Something";//The condition is met
+            app2.Load(instanceId);
+
+            //this resumes the bookmark setup by readline
+            app2.ResumeBookmark(bookmarkName, input);
+
+            syncEvent.WaitOne();
+
+            Assert.True(completed2);
+            Assert.True(unloaded2);
+
+            return outputs;
+        }
+
+
+        [Fact]
+        public void TestPersistenceWithBookmarkAndOutputs()
+        {
+            var a = new ReadLineReturnOrThrow();
 
 
             bool completed1 = false;
@@ -102,43 +206,206 @@ namespace BasicTests
             Assert.True(unloaded1);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndComplete(a, id, readLineBookmark);
+            var dic = LoadAndComplete(a, id, readLineBookmark);
+            Assert.Equal("SomethingABC", dic["FinalResult"]);
         }
 
-        static void LoadAndComplete(Activity workflowDefinition, Guid instanceId, string bookmarkName)
+        [Fact]
+        public void TestPersistenceWithBookmarkAndThrows()
         {
-            bool completed2 = false;
-            bool unloaded2 = false;
+            var a = new ReadLineReturnOrThrow();
+
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
-            var app2 = new WorkflowApplication(workflowDefinition)
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.Unload;//so persist and unload
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                unloaded1 = true;
+                Assert.True(false);
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded1 = true;
+                syncEvent.Set();
+            };
+
+            //  app.Persist();
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+
+
+
+            bool completed2 = false;
+            bool unloaded2 = false;
+            AutoResetEvent syncEvent2 = new AutoResetEvent(false);
+            IDictionary<string, object> outputs = null;
+
+            var app2 = new WorkflowApplication(a)
             {
                 Completed = e =>
                 {
+                    Assert.True(false);
+                },
+
+                Unloaded = e =>
+                {
+                    Assert.True(false);
+                },
+
+                //Must not syncEvent.Set() in the callback.
+                OnUnhandledException = (e) =>
+                {
+                    Assert.True(e.UnhandledException is ArgumentException);
+                    return UnhandledExceptionAction.Abort;
+                },
+
+                Aborted = e=>
+                {
+                    Assert.True(e.Reason is ArgumentException);
+                    syncEvent2.Set();
+                },
+
+
+                InstanceStore = WFDefinitionStore.Instance.Store,
+            };
+
+            string input = null;//The condition is met
+            app2.Load(id);
+
+            //this resumes the bookmark setup by readline
+            app2.ResumeBookmark(readLineBookmark, input);
+
+            syncEvent2.WaitOne();
+
+            Assert.False(completed2);
+            Assert.False(unloaded2);
+
+        }
+
+
+        [Fact]
+        public void TestPersistenceWithBookmarkAndThrowsWihoutOnUnhandledException()
+        {
+            var a = new ReadLineReturnOrThrow();
+
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.Unload;//so persist and unload
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+                Assert.True(false);
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                unloaded1 = true;
+                Assert.True(false);
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+                Assert.True(false);
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded1 = true;
+                syncEvent.Set();
+            };
+
+            //  app.Persist();
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+
+
+
+            bool completed2 = false;
+            bool unloaded2 = false;
+            AutoResetEvent syncEvent2 = new AutoResetEvent(false);
+            IDictionary<string, object> outputs = null;
+
+            var app2 = new WorkflowApplication(a)
+            {
+                Completed = e =>
+                {
+                    Assert.Equal(ActivityInstanceState.Faulted, e.CompletionState);
+                    Assert.NotNull(e.Outputs);
+                    Assert.Equal(0, e.Outputs.Count);
+                    if (e.CompletionState == ActivityInstanceState.Closed)
+                    {
+                        outputs = e.Outputs;
+                    }
                     completed2 = true;
                 },
 
                 Unloaded = e =>
                 {
                     unloaded2 = true;
-                    syncEvent.Set();
+                    syncEvent2.Set();
                 },
 
                 InstanceStore = WFDefinitionStore.Instance.Store,
             };
 
-            var input = "Something";//The condition is met
-            app2.Load(instanceId);
+            string input = null;//The condition is met
+            app2.Load(id);
 
             //this resumes the bookmark setup by readline
-            app2.ResumeBookmark(bookmarkName, input);
+            app2.ResumeBookmark(readLineBookmark, input);
 
-            syncEvent.WaitOne();
+            syncEvent2.WaitOne();
 
             Assert.True(completed2);
             Assert.True(unloaded2);
+            Assert.Null(outputs);
 
         }
+
+
+
 
         [Fact]
         public void TestPersistWithWrongStoreThrows()
