@@ -28,7 +28,7 @@ namespace Fonlow.Activities
             };
 
             var handle = Store.CreateInstanceHandle();
-            var view = Store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(30));
+            var view = Store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(50));
             handle.Free();
             Store.DefaultInstanceOwner = view.InstanceOwner;
 
