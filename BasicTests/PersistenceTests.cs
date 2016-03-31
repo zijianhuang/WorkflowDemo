@@ -816,6 +816,75 @@ namespace BasicTests
         }
 
 
+        [Fact]
+        public void TestRunningWorkflowTwice()
+        {
+            var a = new Fonlow.Activities.Calculation();
+            a.XX = 3;
+            a.YY = 7;
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            var app = new WorkflowApplication(a);
+            app.InstanceStore = WFDefinitionStore.Instance.Store;
+            app.PersistableIdle = (eventArgs) =>
+            {
+                return PersistableIdleAction.Unload;//so persist and unload
+            };
+
+            app.OnUnhandledException = (e) =>
+            {
+
+                return UnhandledExceptionAction.Abort;
+            };
+
+            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+            {
+                completed1 = true;
+
+            };
+
+            app.Aborted = (eventArgs) =>
+            {
+
+            };
+
+            app.Unloaded = (eventArgs) =>
+            {
+                unloaded1 = true;
+                syncEvent.Set();
+            };
+
+            var id = app.Id;
+            stopwatch.Restart();
+            stopwatch2.Restart();
+            app.Run();
+            syncEvent.WaitOne();
+
+            stopwatch.Stop();
+            Assert.True(stopwatch.ElapsedMilliseconds < 2500, String.Format("The first one is executed for {0} milliseconds", stopwatch.ElapsedMilliseconds));
+            //the ellipsed time depends on the performance of the WF runtime when handling persistence. The first case of persistence is slow.
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            stopwatch.Restart();
+            var t = WFDefinitionStore.Instance.TryAdd(id, a);
+            stopwatch.Stop();
+            Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
+
+            AutoResetEvent syncEvent2 = new AutoResetEvent(false);
+            app.Run();
+            syncEvent2.WaitOne();
+
+        }
+
+
+
+
     }
 
 

@@ -141,7 +141,20 @@ namespace BasicTests
                 TargetType = this.GetType(),
             };
 
-            Assert.Throws<InvalidProgramException>(()=> WorkflowInvoker.Invoke(a));
+            Assert.Throws<InvalidProgramException>(() => WorkflowInvoker.Invoke(a));
+        }
+
+        [Fact]
+        public void TestInvokeStaticMethodAsyncThatThrows()
+        {
+            var a = new System.Activities.Statements.InvokeMethod()
+            {
+                MethodName = "ThrowException",
+                TargetType = this.GetType(),
+                RunAsynchronously=true,
+            };
+
+            Assert.Throws<InvalidProgramException>(() => WorkflowInvoker.Invoke(a));
         }
 
 

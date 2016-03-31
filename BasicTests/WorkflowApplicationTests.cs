@@ -8,6 +8,7 @@ using Fonlow.Activities;
 using System.Activities;
 using System.Activities.Expressions;
 using System.Threading;
+using System.Diagnostics;
 
 namespace BasicTests
 {
@@ -23,7 +24,50 @@ namespace BasicTests
                 {
                     new System.Activities.Statements.Delay()
                     {
-                        Duration= TimeSpan.FromSeconds(2),
+                        Duration= TimeSpan.FromSeconds(3),
+                    },
+
+                    new Multiply()
+                    {
+                        X = 3,
+                        Y = 7,
+                    }
+                },
+            };
+
+            int mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            int workFlowThreadId = -1;
+
+            var app = new WorkflowApplication(a)
+            {
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    workFlowThreadId = Thread.CurrentThread.ManagedThreadId;
+                    syncEvent.Set();
+                },
+            };
+
+             
+            var dt = DateTime.Now;
+            app.Run();
+            var seconds = (DateTime.Now - dt).TotalSeconds;
+            System.Diagnostics.Debug.WriteLine($"It takes {seconds} seconds to init a run.");//The 1st WorkflowApplication may take over 1 second to run.
+            Assert.True(seconds < 2, "app.Run() should not be blocking");
+            syncEvent.WaitOne();
+            Assert.NotEqual(mainThreadId, workFlowThreadId);
+        }
+
+        [Fact]
+        public void TestWorkflowApplicationTwice()
+        {
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+            var a = new System.Activities.Statements.Sequence()
+            {
+                Activities =
+                {
+                    new System.Activities.Statements.Delay()
+                    {
+                        Duration= TimeSpan.FromSeconds(3),
                     },
 
                     new Multiply()
@@ -47,9 +91,25 @@ namespace BasicTests
 
             var dt = DateTime.Now;
             app.Run();
-            Assert.True((DateTime.Now - dt).TotalSeconds < 1, "app.Run() should not be blocking");
+            Assert.True((DateTime.Now - dt).TotalSeconds < 2, "app.Run() should not be blocking");
             syncEvent.WaitOne();
             Assert.NotEqual(mainThreadId, workFlowThreadId);
+
+
+            var syncEvent2 = new AutoResetEvent(false);
+            var app2 = new WorkflowApplication(a)
+            {
+                Completed= e=>
+                {
+                    syncEvent2.Set();
+                }
+            };
+
+            dt = DateTime.Now;
+            app2.Run();
+            syncEvent2.WaitOne();
+            var seconds = (DateTime.Now - dt).TotalSeconds;
+            Debug.WriteLine($"Second run takes {seconds} seconds");
         }
 
         [Fact]
