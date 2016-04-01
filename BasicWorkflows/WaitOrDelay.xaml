@@ -87,12 +87,15 @@
           </Delay>
         </PickBranch.Trigger>
         <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2">
-          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Delay 10 seconds done">
+          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3">
             <WriteLine.TextWriter>
               <InArgument x:TypeArguments="si:TextWriter">
                 <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
               </InArgument>
             </WriteLine.TextWriter>
+            <InArgument x:TypeArguments="x:String">
+              <mca:CSharpValue x:TypeArguments="x:String">"Delay" + DelaySeconds + " seconds done"</mca:CSharpValue>
+            </InArgument>
           </WriteLine>
           <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
             <Assign.To>
@@ -114,7 +117,7 @@
         </InArgument>
       </WriteLine.TextWriter>
     </WriteLine>
-    <sads:DebugSymbol.Symbol>d0BDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sGgFxAXQBAjADdg4CAQE0BToRAgEsOwVtDAIBCG4FdBECAQI0QzRWAgExNws3cAIBLTwHUBQCARxRB2wUAgEJbkNuTgIBB3ELcXACAQM+C0QZAgEmRglPFQIBHVMLVxMCARdZCWsUAgEKPiU+MAIBK0ERQWICASdNDU1hAgEiSQ9JdAIBHlUPVXECARhaC2AXAgERYQtqFAIBC1pJWmACARZdEV12AgESaDZoPwIBEGQRZGICAQw=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sGgFxAXQBAjADeQ4CAQE0BToRAgEvOwVwDAIBCHEFdxECAQI0QzRWAgE0Nws3cAIBMDwHUBQCAR9RB28UAgEJcUNxTgIBB3QLdHACAQM+C0QZAgEpRglPFQIBIFMLVxMCARpZCW4UAgEKPiU+MAIBLkERQWICASpNDU1hAgElSQ9JdAIBIVUPVXECARtaC2MXAgERZAttFAIBC2EPYXUCARZdEV12AgESazZrPwIBEGcRZ2ICAQw=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
