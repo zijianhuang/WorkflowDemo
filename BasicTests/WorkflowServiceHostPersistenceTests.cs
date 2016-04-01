@@ -38,7 +38,7 @@ namespace BasicTests
             instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
             host.Description.Behaviors.Add(instanceStoreBehavior);
 
-            host.Open(TimeSpan.FromSeconds(2));
+            host.Open();
             Assert.Equal(CommunicationState.Opened, host.State);
 
 
@@ -72,7 +72,7 @@ namespace BasicTests
             instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
             host.Description.Behaviors.Add(instanceStoreBehavior);
 
-            host.Open(TimeSpan.FromSeconds(2));
+            host.Open();
             Assert.Equal(CommunicationState.Opened, host.State);
 
 
