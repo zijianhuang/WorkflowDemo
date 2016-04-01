@@ -24,31 +24,32 @@ namespace BasicTests
         public void TestOpenHost()
         {
             // Create service host.
-            WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress));
+            using (WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress)))
+            {
+
+                // Add service endpoint.
+                host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
+
+                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
+                instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
+                instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
+                instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
+                instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
+                instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
+                host.Description.Behaviors.Add(instanceStoreBehavior);
+
+                host.Open();
+                Assert.Equal(CommunicationState.Opened, host.State);
 
 
-            // Add service endpoint.
-            host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
-
-            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-            instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-            instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-            instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-            instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-            instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
-            host.Description.Behaviors.Add(instanceStoreBehavior);
-
-            host.Open();
-            Assert.Equal(CommunicationState.Opened, host.State);
-
-
-            // Create a client that sends a message to create an instance of the workflow.
-            ICountingWorkflow client = ChannelFactory<ICountingWorkflow>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
-            client.start();
-            Debug.WriteLine("client.start() done.");
-            System.Threading.Thread.Sleep(10000);
-            Debug.WriteLine("sleep finished");
-            host.Close();
+                // Create a client that sends a message to create an instance of the workflow.
+                ICountingWorkflow client = ChannelFactory<ICountingWorkflow>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
+                client.start();
+                Debug.WriteLine("client.start() done.");
+                System.Threading.Thread.Sleep(10000);
+                Debug.WriteLine("sleep finished");
+                host.Close();
+            }
         }
 
         /// <summary>
@@ -58,35 +59,38 @@ namespace BasicTests
         public void TestMultiplyXY()
         {
             // Create service host.
-            WorkflowServiceHost host = new WorkflowServiceHost(new Fonlow.Activites.MultiplyWorkflow(), new Uri(hostBaseAddress));
+            using (WorkflowServiceHost host = new WorkflowServiceHost(new Fonlow.Activities.MultiplyWorkflow2(), new Uri(hostBaseAddress)))
+            {
+                Debug.WriteLine("host created.");
+                // Add service endpoint.
+                host.AddServiceEndpoint("ICalculation", new NetTcpBinding(), "");
+
+                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
+                instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
+                instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
+                instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
+                instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
+                instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
+                host.Description.Behaviors.Add(instanceStoreBehavior);
+                
+                host.Open();
+                Debug.WriteLine("host opened");
+                Assert.Equal(CommunicationState.Opened, host.State);
 
 
-            // Add service endpoint.
-            host.AddServiceEndpoint("ICalculation", new NetTcpBinding(), "");
+                // Create a client that sends a message to create an instance of the workflow.
+                var client = ChannelFactory<ICalculation>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
+                client.MultiplyXY(3, 7);
 
-            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-            instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-            instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-            instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-            instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-            instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
-            host.Description.Behaviors.Add(instanceStoreBehavior);
+                Debug.WriteLine("client.MultiplyXY called.");
 
-            host.Open();
-            Assert.Equal(CommunicationState.Opened, host.State);
-
-
-            // Create a client that sends a message to create an instance of the workflow.
-            var client = ChannelFactory<ICalculation>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
-            client.MultiplyXY(3, 7);
-
-            //Debug.WriteLine("client.start() done.");
-            //System.Threading.Thread.Sleep(10000);
-            //Debug.WriteLine("sleep finished");
-            System.Threading.Thread.Sleep(3000);
-            var r = client.GetLateResult();
-            Assert.Equal(21, r);
-            host.Close();
+                //Debug.WriteLine("client.start() done.");
+                //System.Threading.Thread.Sleep(10000);
+                //Debug.WriteLine("sleep finished");
+                //System.Threading.Thread.Sleep(3000);
+                var r = client.GetLateResult();
+                Assert.Equal(21, r);
+            }
         }
 
     }
