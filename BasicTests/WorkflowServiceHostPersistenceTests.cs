@@ -52,45 +52,34 @@ namespace BasicTests
             }
         }
 
-        /// <summary>
-        /// https://msdn.microsoft.com/en-us/library/ff432975%28v=vs.110%29.aspx
-        /// </summary>
         [Fact]
-        public void TestMultiplyXY()
+        public void TestOpenHostWithWrongStoreThrows()
         {
             // Create service host.
-            using (WorkflowServiceHost host = new WorkflowServiceHost(new Fonlow.Activities.MultiplyWorkflow2(), new Uri(hostBaseAddress)))
+            WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress));
+
+
+            // Add service endpoint.
+            host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
+
+            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WFXXX; Integrated Security = SSPI")
             {
-                Debug.WriteLine("host created.");
-                // Add service endpoint.
-                host.AddServiceEndpoint("ICalculation", new NetTcpBinding(), "");
+                HostLockRenewalPeriod = new TimeSpan(0, 0, 5),
+                RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2),
+                InstanceCompletionAction = InstanceCompletionAction.DeleteAll,
+                InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry,
+                InstanceEncodingOption = InstanceEncodingOption.GZip,
 
-                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-                instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-                instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-                instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-                instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-                instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
-                host.Description.Behaviors.Add(instanceStoreBehavior);
-                
-                host.Open();
-                Debug.WriteLine("host opened");
-                Assert.Equal(CommunicationState.Opened, host.State);
+            };
+            host.Description.Behaviors.Add(instanceStoreBehavior);
 
 
-                // Create a client that sends a message to create an instance of the workflow.
-                var client = ChannelFactory<ICalculation>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
-                client.MultiplyXY(3, 7);
+            var ex = Assert.Throws<CommunicationException>(()
+                => host.Open());
 
-                Debug.WriteLine("client.MultiplyXY called.");
-
-                //Debug.WriteLine("client.start() done.");
-                //System.Threading.Thread.Sleep(10000);
-                //Debug.WriteLine("sleep finished");
-                //System.Threading.Thread.Sleep(3000);
-                var r = client.GetLateResult();
-                Assert.Equal(21, r);
-            }
+            Assert.NotNull(ex.InnerException);
+            Assert.Equal(typeof(System.Runtime.DurableInstancing.InstancePersistenceCommandException), ex.InnerException.GetType());
+            Assert.Equal(CommunicationState.Faulted, host.State);//so can't be disposed.
         }
 
     }

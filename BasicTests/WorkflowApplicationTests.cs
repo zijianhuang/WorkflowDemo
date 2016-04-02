@@ -47,7 +47,7 @@ namespace BasicTests
                 },
             };
 
-             
+
             var dt = DateTime.Now;
             app.Run();
             var seconds = (DateTime.Now - dt).TotalSeconds;
@@ -55,6 +55,85 @@ namespace BasicTests
             Assert.True(seconds < 2, "app.Run() should not be blocking");
             syncEvent.WaitOne();
             Assert.NotEqual(mainThreadId, workFlowThreadId);
+        }
+
+        [Fact]
+        public void TestWorkflowApplicationBeginRun()
+        {
+            var a = new System.Activities.Statements.Sequence()
+            {
+                Activities =
+                {
+                    new System.Activities.Statements.Delay()
+                    {
+                        Duration= TimeSpan.FromSeconds(3),
+                    },
+
+                    new Multiply()
+                    {
+                        X = 3,
+                        Y = 7,
+                    }
+                },
+            };
+
+            int mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            bool completedCalled = false;
+
+            var app = new WorkflowApplication(a)
+            {
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completedCalled = true;
+                },
+            };
+
+
+            var dt = DateTime.Now;
+            var asyncResult = app.BeginRun(null, null);
+            var seconds = (DateTime.Now - dt).TotalSeconds;
+            System.Diagnostics.Debug.WriteLine($"It takes {seconds} seconds to init a BeginRun.");//The 1st WorkflowApplication may take over 1 second to run.
+            app.EndRun(asyncResult);
+            Assert.False(completedCalled);
+        }
+
+        [Fact]
+        public void TestWorkflowApplicationBeginRunWithException()
+        {
+            var a = new System.Activities.Statements.Sequence()
+            {
+                Activities =
+                {
+                    new ThrowSomething()
+                },
+            };
+
+            int mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            bool completedCalled = false;
+            bool exceptionHandlerCalled = false;
+
+            var app = new WorkflowApplication(a)
+            {
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completedCalled = true;
+                },
+
+                OnUnhandledException = args=>
+                {
+                    exceptionHandlerCalled = true;
+                    return UnhandledExceptionAction.Terminate;
+                },
+            };
+
+
+            var dt = DateTime.Now;
+            var asyncResult = app.BeginRun(null, null);
+            var seconds = (DateTime.Now - dt).TotalSeconds;
+            System.Diagnostics.Debug.WriteLine($"It takes {seconds} seconds to init a BeginRun.");//The 1st WorkflowApplication may take over 1 second to run.
+            app.EndRun(asyncResult);
+            Assert.False(completedCalled);
+            Assert.False(exceptionHandlerCalled);
         }
 
         [Fact]

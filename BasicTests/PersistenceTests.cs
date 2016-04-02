@@ -74,19 +74,19 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 unloaded1 = true;
-                
+
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
@@ -125,7 +125,7 @@ namespace BasicTests
             {
                 Completed = e =>
                 {
-                    if (e.CompletionState== ActivityInstanceState.Closed)
+                    if (e.CompletionState == ActivityInstanceState.Closed)
                     {
                         outputs = e.Outputs;
                     }
@@ -176,19 +176,19 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
-                unloaded1 = true;
-                
+                completed1 = true;
+
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
@@ -230,19 +230,19 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 unloaded1 = true;
-                
+
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
@@ -270,12 +270,12 @@ namespace BasicTests
             {
                 Completed = e =>
                 {
-                    
+
                 },
 
                 Unloaded = e =>
                 {
-                    
+
                 },
 
                 //Must not syncEvent.Set() in the callback.
@@ -285,7 +285,7 @@ namespace BasicTests
                     return UnhandledExceptionAction.Abort;
                 },
 
-                Aborted = e=>
+                Aborted = e =>
                 {
                     Assert.True(e.Reason is ArgumentException);
                     syncEvent2.Set();
@@ -329,19 +329,19 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 unloaded1 = true;
-                
+
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
@@ -429,7 +429,7 @@ namespace BasicTests
             //None of the handlers should be running
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
@@ -463,7 +463,7 @@ namespace BasicTests
             //None of the handlers should be running
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
@@ -480,7 +480,7 @@ namespace BasicTests
 
             app.Idle = e =>
             {
-                
+
             };
 
             app.Persist();
@@ -570,19 +570,19 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 completed1 = true;
-                
+
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
@@ -675,25 +675,25 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-                
+
                 return UnhandledExceptionAction.Abort;
             };
 
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 completed1 = true;
-             //   Assert.True(stopwatch.Elapsed.TotalSeconds > 3 && stopwatch.Elapsed.TotalSeconds < 5);
+                //   Assert.True(stopwatch.Elapsed.TotalSeconds > 3 && stopwatch.Elapsed.TotalSeconds < 5);
                 syncEvent.Set();
             };
 
             app.Aborted = (eventArgs) =>
             {
-                
+
             };
 
             app.Unloaded = (eventArgs) =>
             {
-                
+
             };
 
             var id = app.Id;
@@ -782,7 +782,7 @@ namespace BasicTests
 
             app.OnUnhandledException = (e) =>
             {
-               // 
+                // 
                 return UnhandledExceptionAction.Abort;
             };
 
@@ -795,12 +795,12 @@ namespace BasicTests
 
             app.Aborted = (eventArgs) =>
             {
-               // 
+                // 
             };
 
             app.Unloaded = (eventArgs) =>
             {
-               // 
+                // 
             };
 
             var id = app.Id;
@@ -876,9 +876,7 @@ namespace BasicTests
             stopwatch.Stop();
             Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
 
-            AutoResetEvent syncEvent2 = new AutoResetEvent(false);
-            app.Run();
-            syncEvent2.WaitOne();
+            Assert.Throws<WorkflowApplicationUnloadedException>(() => app.Run());
 
         }
 

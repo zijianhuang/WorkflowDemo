@@ -1,5 +1,6 @@
 ﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.MultiplyWorkflow2" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="Fonlow.Activities.MultiplyWorkflow2_1"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicActivities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
  xmlns:p="http://fonlow.com/workflowdemo/"
@@ -43,6 +44,7 @@
     <Sequence.Variables>
       <Variable x:TypeArguments="x:Int32" Name="x" />
       <Variable x:TypeArguments="x:Int32" Name="y" />
+      <Variable x:TypeArguments="x:Int64" Name="z" />
     </Sequence.Variables>
     <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="WF started">
       <WriteLine.TextWriter>
@@ -55,7 +57,7 @@
       <Sequence.Variables>
         <Variable x:TypeArguments="p1:CorrelationHandle" x:Name="__ReferenceID0" Name="__handle1" />
       </Sequence.Variables>
-      <p1:Receive x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="Receive_1" OperationName="MultiplyXY" ServiceContractName="p:ICalculation">
+      <p1:Receive x:Name="__ReferenceID1" CanCreateInstance="True" sap2010:WorkflowViewState.IdRef="Receive_1" OperationName="MultiplyXY" ServiceContractName="p:ICalculation">
         <p1:Receive.CorrelationInitializers>
           <p1:RequestReplyCorrelationInitializer>
             <p1:RequestReplyCorrelationInitializer.CorrelationHandle>
@@ -74,53 +76,58 @@
           </OutArgument>
         </p1:ReceiveParametersContent>
       </p1:Receive>
-      <p1:SendReply Request="{x:Reference __ReferenceID1}" DisplayName="SendReplyToReceive" sap2010:WorkflowViewState.IdRef="SendReply_1" />
-    </Sequence>
-    <WriteLine Text="MultiplyXY called">
-      <WriteLine.TextWriter>
-        <InArgument x:TypeArguments="si:TextWriter">
-          <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-        </InArgument>
-      </WriteLine.TextWriter>
-      <sap2010:WorkflowViewState.IdRef>WriteLine_2</sap2010:WorkflowViewState.IdRef>
-    </WriteLine>
-    <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2">
-      <Sequence.Variables>
-        <Variable x:TypeArguments="p1:CorrelationHandle" x:Name="__ReferenceID2" Name="__handle1" />
-      </Sequence.Variables>
-      <p1:Receive x:Name="__ReferenceID3" sap2010:WorkflowViewState.IdRef="Receive_2" OperationName="GetLateResult" ServiceContractName="p:ICalculation">
-        <p1:Receive.CorrelationInitializers>
-          <p1:RequestReplyCorrelationInitializer>
-            <p1:RequestReplyCorrelationInitializer.CorrelationHandle>
-              <InArgument x:TypeArguments="p1:CorrelationHandle">
-                <VariableValue x:TypeArguments="p1:CorrelationHandle" Variable="{x:Reference __ReferenceID2}" />
-              </InArgument>
-            </p1:RequestReplyCorrelationInitializer.CorrelationHandle>
-          </p1:RequestReplyCorrelationInitializer>
-        </p1:Receive.CorrelationInitializers>
-      </p1:Receive>
-      <p1:SendReply Request="{x:Reference __ReferenceID3}" DisplayName="SendReplyToReceive" sap2010:WorkflowViewState.IdRef="SendReply_2">
-        <p1:SendParametersContent>
-          <InArgument x:TypeArguments="x:Int64" x:Key="p">21</InArgument>
-        </p1:SendParametersContent>
-      </p1:SendReply>
-      <WriteLine Text="GetLateResult called">
+      <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_4">
         <WriteLine.TextWriter>
           <InArgument x:TypeArguments="si:TextWriter">
             <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
           </InArgument>
         </WriteLine.TextWriter>
-        <sap2010:WorkflowViewState.IdRef>WriteLine_3</sap2010:WorkflowViewState.IdRef>
+        <InArgument x:TypeArguments="x:String">
+          <mca:CSharpValue x:TypeArguments="x:String">"MultiplyXY running with "+x + " and " + y</mca:CSharpValue>
+        </InArgument>
       </WriteLine>
+      <fa:Multiply Z="{x:Null}" sap2010:WorkflowViewState.IdRef="Multiply_1">
+        <fa:Multiply.Result>
+          <OutArgument x:TypeArguments="x:Int64">
+            <mca:CSharpReference x:TypeArguments="x:Int64">z</mca:CSharpReference>
+          </OutArgument>
+        </fa:Multiply.Result>
+        <fa:Multiply.X>
+          <InArgument x:TypeArguments="x:Int32">
+            <mca:CSharpValue x:TypeArguments="x:Int32">x</mca:CSharpValue>
+          </InArgument>
+        </fa:Multiply.X>
+        <fa:Multiply.Y>
+          <InArgument x:TypeArguments="x:Int32">
+            <mca:CSharpValue x:TypeArguments="x:Int32">y</mca:CSharpValue>
+          </InArgument>
+        </fa:Multiply.Y>
+      </fa:Multiply>
+      <p1:SendReply Request="{x:Reference __ReferenceID1}" DisplayName="SendReplyToReceive" sap2010:WorkflowViewState.IdRef="SendReply_1">
+        <p1:SendParametersContent>
+          <InArgument x:TypeArguments="x:Int64" x:Key="Result">
+            <mca:CSharpValue x:TypeArguments="x:Int64">z</mca:CSharpValue>
+          </InArgument>
+        </p1:SendParametersContent>
+      </p1:SendReply>
     </Sequence>
-    <sads:DebugSymbol.Symbol>d0ZDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xNdWx0aXBseVdvcmtmbG93Mi54YW1sFSoDdQ4CAQEvBTURAgEiNgVOEAIBFE8FVhECAQ9XBXMQAgECL0MvTwIBJjILMnACASM6B0wUAgEYTQdNjQECARVPFU8oAgETUgtScAIBEFsHZRQCAQ1mB2oWAgEJawdyEwIBA0kNSVMCAR5GDUZTAgEaPxE/cQIBGWARYHECAQ5oO2g9AgEKaxdrLQIBCG4NbnICAQQ=</sads:DebugSymbol.Symbol>
+    <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="MultiplyXY called and responded">
+      <WriteLine.TextWriter>
+        <InArgument x:TypeArguments="si:TextWriter">
+          <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+        </InArgument>
+      </WriteLine.TextWriter>
+    </WriteLine>
+    <sads:DebugSymbol.Symbol>d0ZDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xNdWx0aXBseVdvcmtmbG93Mi54YW1sFSsDeg4CAQExBTcRAgE4OAVxEAIBCHIFeBECAQIxQzFPAgE9NAs0cAIBOTwHThQCASxPB1gTAgEhWQdpFQIBEWoHcBYCAQlyQ3JkAgEHdQt1cAIBA0sNS1MCATNIDUhTAgEuQRFBcQIBLVYLVnMCASdSDVJyAgEiXA1cUwIBHGENYUsCARdmDWZLAgESbQ1tSwIBCg==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="277,62" />
       <sap2010:ViewStateData Id="Receive_1" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="255,62" />
+      <sap2010:ViewStateData Id="Multiply_1" sap:VirtualizedContainerService.HintSize="255,22" />
       <sap2010:ViewStateData Id="SendReply_1" sap:VirtualizedContainerService.HintSize="255,90" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="277,344">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="277,508">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -128,24 +135,14 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="277,62" />
-      <sap2010:ViewStateData Id="Receive_2" sap:VirtualizedContainerService.HintSize="255,90" />
-      <sap2010:ViewStateData Id="SendReply_2" sap:VirtualizedContainerService.HintSize="255,90" />
-      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="255,62" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="277,446">
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="299,836">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="299,1158">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Fonlow.Activities.MultiplyWorkflow2_1" sap:VirtualizedContainerService.HintSize="339,1238" />
+      <sap2010:ViewStateData Id="Fonlow.Activities.MultiplyWorkflow2_1" sap:VirtualizedContainerService.HintSize="339,916" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

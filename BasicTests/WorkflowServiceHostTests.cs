@@ -34,35 +34,6 @@ namespace BasicTests
             }
         }
 
-        [Fact]
-        public void TestOpenHostWithWrongStoreThrows()
-        {
-            // Create service host.
-            WorkflowServiceHost host = new WorkflowServiceHost(new Microsoft.Samples.BuiltInConfiguration.CountingWorkflow(), new Uri(hostBaseAddress));
-
-
-            // Add service endpoint.
-            host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
-
-            SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WFXXX; Integrated Security = SSPI")
-            {
-                HostLockRenewalPeriod = new TimeSpan(0, 0, 5),
-                RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2),
-                InstanceCompletionAction = InstanceCompletionAction.DeleteAll,
-                InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry,
-                InstanceEncodingOption = InstanceEncodingOption.GZip,
-                
-            };
-            host.Description.Behaviors.Add(instanceStoreBehavior);
-
-
-            var ex = Assert.Throws<CommunicationException>(()
-                => host.Open());
-
-            Assert.NotNull(ex.InnerException);
-            Assert.Equal(typeof(System.Runtime.DurableInstancing.InstancePersistenceCommandException), ex.InnerException.GetType());
-            Assert.Equal(CommunicationState.Faulted, host.State);//so can't be disposed.
-        }
 
         [Fact]
         public void TestOpenHost()
@@ -74,14 +45,6 @@ namespace BasicTests
             // Add service endpoint.
             host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
 
-            //SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-            //instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-            //instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-            //instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-            //instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-            //instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
-            //host.Description.Behaviors.Add(instanceStoreBehavior);
-
             host.Open();
             Assert.Equal(CommunicationState.Opened, host.State);
 
@@ -92,6 +55,30 @@ namespace BasicTests
 
             host.Close();
         }
+
+        [Fact]
+        public void TestMultiplyXY()
+        {
+            // Create service host.
+            using (WorkflowServiceHost host = new WorkflowServiceHost(new Fonlow.Activities.MultiplyWorkflow2(), new Uri(hostBaseAddress)))
+            {
+                Debug.WriteLine("host created.");
+                // Add service endpoint.
+                host.AddServiceEndpoint("ICalculation", new NetTcpBinding(), "");
+
+                host.Open();
+                Debug.WriteLine("host opened");
+                Assert.Equal(CommunicationState.Opened, host.State);
+
+
+                // Create a client that sends a message to create an instance of the workflow.
+                var client = ChannelFactory<ICalculation>.CreateChannel(new NetTcpBinding(), new EndpointAddress(hostBaseAddress));
+                var r = client.MultiplyXY(3, 7);
+
+                Assert.Equal(21, r);
+            }
+        }
+
     }
 
     [ServiceContract]
@@ -105,11 +92,10 @@ namespace BasicTests
     [ServiceContract(Namespace ="http://fonlow.com/workflowdemo/")]
     public interface ICalculation
     {
-        [OperationContract(IsOneWay = true)]
-        void MultiplyXY(int parameter1, int parameter2);
-
         [OperationContract]
-        long GetLateResult();
+        [return: MessageParameter(Name = "Result")]
+        long MultiplyXY(int parameter1, int parameter2);
+
     }
 
 }
