@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AsyncDoSomething.cs" />
     <Compile Include="DateToYMD.cs" />
+    <Compile Include="GetWorkflowInstanceId.cs" />
     <Compile Include="Plus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadLine.cs" />
