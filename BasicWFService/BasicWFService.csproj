@@ -140,6 +140,16 @@
       <SubType>Designer</SubType>
     </XamlAppDef>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BasicActivities\BasicActivities.csproj">
+      <Project>{bcc3bed6-f4cf-45c8-81bf-0166d0698535}</Project>
+      <Name>BasicActivities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SillyHelpers\SillyHelpers.csproj">
+      <Project>{83bff0bd-049f-445f-afc8-7b2e3c4c3dfb}</Project>
+      <Name>SillyHelpers</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
