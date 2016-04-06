@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Fonlow.WorkflowDemo.Contracts;
 
 namespace Fonlow.Utilities
 {
-
-    public enum TriangleType { Error, Scalene, Isosceles, Equilateral };
 
     public static class TriangleHelper
     {
