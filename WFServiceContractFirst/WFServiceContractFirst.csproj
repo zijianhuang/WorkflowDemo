@@ -109,11 +109,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Fonlow.WorkflowDemo.Contracts\Fonlow.WorkflowDemo.Contracts.csproj">
       <Project>{3cff1b53-8cf9-4de9-b388-4605b30f646e}</Project>
       <Name>Fonlow.WorkflowDemo.Contracts</Name>
