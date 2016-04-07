@@ -77,7 +77,7 @@
     </XamlAppDef>
   </ItemGroup>
   <ItemGroup>
-    <XamlAppDef Include="WaitOrDelay.xaml">
+    <XamlAppDef Include="WaitForSignalOrDelay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </XamlAppDef>

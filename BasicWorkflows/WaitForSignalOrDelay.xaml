@@ -10,8 +10,8 @@
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Duration" Type="InArgument(x:TimeSpan)" />
     <x:Property Name="Result" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="Duration" Type="InArgument(x:TimeSpan)" />
     <x:Property Name="BookmarkName" Type="InArgument(x:String)" />
   </x:Members>
   <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>

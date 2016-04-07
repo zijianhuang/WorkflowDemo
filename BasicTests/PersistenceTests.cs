@@ -718,7 +718,7 @@ namespace BasicTests
         [Fact]
         public void TestWaitorDelayWithBookmarkToWakup()
         {
-            var a = new WaitOrDelay()
+            var a = new WaitForSignalOrDelay()
             {
                 Duration = TimeSpan.FromSeconds(10),
                 BookmarkName = "Wakeup",
@@ -776,7 +776,7 @@ namespace BasicTests
         [Fact]
         public void TestWaitorDelayWithDelayToWakeup()
         {
-            var a = new WaitOrDelay()
+            var a = new WaitForSignalOrDelay()
             {
                 Duration=TimeSpan.FromSeconds(10),
                 BookmarkName="Wakeup",

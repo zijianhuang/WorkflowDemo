@@ -34,7 +34,7 @@ namespace WcfService1
 
         public bool RunWaitOrDelay(int seconds)
         {
-            var a = new Fonlow.Activities.WaitOrDelay()
+            var a = new Fonlow.Activities.WaitForSignalOrDelay()
             {
                 Duration=TimeSpan.FromSeconds(seconds),
             };
