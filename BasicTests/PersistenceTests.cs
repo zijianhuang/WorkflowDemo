@@ -718,7 +718,11 @@ namespace BasicTests
         [Fact]
         public void TestWaitorDelayWithBookmarkToWakup()
         {
-            var a = new WaitOrDelay();
+            var a = new WaitOrDelay()
+            {
+                Duration = TimeSpan.FromSeconds(10),
+                BookmarkName = "Wakeup",
+            };
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
@@ -765,20 +769,24 @@ namespace BasicTests
 
             var br = app.ResumeBookmark("readLine2", "hahaha");
 
-            outputs = LoadWithBookmarkAndComplete(a, id, "readLine2", "hahaha");
-            Assert.Equal("hahahaABC", outputs["FinalResult"]);
+            outputs = LoadWithBookmarkAndComplete(a, id, "Wakeup", "hahaha");
+            Assert.True((bool)outputs["Result"]);
         }
 
         [Fact]
         public void TestWaitorDelayWithDelayToWakeup()
         {
-            var a = new WaitOrDelay();
+            var a = new WaitOrDelay()
+            {
+                Duration=TimeSpan.FromSeconds(10),
+                BookmarkName="Wakeup",
+            };
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
             bool completed1 = false;
             bool unloaded1 = false;
-            var app = new WorkflowApplication(a, new Dictionary<string, object>() { { "DelaySeconds", 3 } });
+            var app = new WorkflowApplication(a);
             app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
@@ -818,10 +826,11 @@ namespace BasicTests
 
             WFDefinitionStore.Instance.TryAdd(id, a);
 
-            var outputs = LoadAndCompleteLongRunning(id);
-    
+            Thread.Sleep(5000); // from 1 seconds to 9 seconds, the total time of the test case is the same.
 
-            Assert.Equal("DelayDone", outputs["FinalResult"]);
+            var outputs = LoadAndCompleteLongRunning(id);
+
+            Assert.False((bool)outputs["Result"]);
         }
 
 

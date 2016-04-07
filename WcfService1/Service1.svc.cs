@@ -36,7 +36,7 @@ namespace WcfService1
         {
             var a = new Fonlow.Activities.WaitOrDelay()
             {
-                DelaySeconds=seconds,
+                Duration=TimeSpan.FromSeconds(seconds),
             };
 
 

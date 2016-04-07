@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.WaitOrDelay" this:WaitOrDelay.DelaySeconds="30"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.WaitOrDelay"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicActivities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,12 +8,11 @@
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
- xmlns:si="clr-namespace:System.IO;assembly=mscorlib"
- xmlns:this="clr-namespace:Fonlow.Activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="DelaySeconds" Type="InArgument(x:Int32)" />
-    <x:Property Name="FinalResult" Type="OutArgument(x:String)" />
+    <x:Property Name="Result" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="Duration" Type="InArgument(x:TimeSpan)" />
+    <x:Property Name="BookmarkName" Type="InArgument(x:String)" />
   </x:Members>
   <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
   <sap2010:WorkflowViewState.IdRef>Fonlow.Activities.WaitOrDelay_1</sap2010:WorkflowViewState.IdRef>
@@ -49,103 +48,67 @@
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="userInput" />
     </Sequence.Variables>
-    <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="ReadLine or Delay">
-      <WriteLine.TextWriter>
-        <InArgument x:TypeArguments="si:TextWriter">
-          <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-        </InArgument>
-      </WriteLine.TextWriter>
-    </WriteLine>
     <Pick sap2010:WorkflowViewState.IdRef="Pick_1">
       <PickBranch DisplayName="Branch1" sap2010:WorkflowViewState.IdRef="PickBranch_1">
         <PickBranch.Trigger>
-          <fa:ReadLine BookmarkName="readLine2" sap2010:WorkflowViewState.IdRef="ReadLine_1">
-            <fa:ReadLine.Result>
-              <OutArgument x:TypeArguments="x:String">
-                <mca:CSharpReference x:TypeArguments="x:String">FinalResult</mca:CSharpReference>
-              </OutArgument>
-            </fa:ReadLine.Result>
+          <fa:ReadLine sap2010:WorkflowViewState.IdRef="ReadLine_1">
+            <fa:ReadLine.BookmarkName>
+              <InArgument x:TypeArguments="x:String">
+                <mca:CSharpValue x:TypeArguments="x:String">BookmarkName</mca:CSharpValue>
+              </InArgument>
+            </fa:ReadLine.BookmarkName>
           </fa:ReadLine>
         </PickBranch.Trigger>
-        <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2">
-          <WriteLine.TextWriter>
-            <InArgument x:TypeArguments="si:TextWriter">
-              <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-            </InArgument>
-          </WriteLine.TextWriter>
-          <InArgument x:TypeArguments="x:String">
-            <mca:CSharpValue x:TypeArguments="x:String">"ReadLine: "+userInput</mca:CSharpValue>
-          </InArgument>
-        </WriteLine>
+        <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Boolean">
+              <mca:CSharpReference x:TypeArguments="x:Boolean">Result</mca:CSharpReference>
+            </OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+          </Assign.Value>
+        </Assign>
       </PickBranch>
       <PickBranch DisplayName="Branch2" sap2010:WorkflowViewState.IdRef="PickBranch_2">
         <PickBranch.Trigger>
           <Delay sap2010:WorkflowViewState.IdRef="Delay_1">
             <InArgument x:TypeArguments="x:TimeSpan">
-              <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(30)</mca:CSharpValue>
+              <mca:CSharpValue x:TypeArguments="x:TimeSpan">Duration</mca:CSharpValue>
             </InArgument>
           </Delay>
         </PickBranch.Trigger>
-        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2">
-          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3">
-            <WriteLine.TextWriter>
-              <InArgument x:TypeArguments="si:TextWriter">
-                <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-              </InArgument>
-            </WriteLine.TextWriter>
-            <InArgument x:TypeArguments="x:String">
-              <mca:CSharpValue x:TypeArguments="x:String">"Delay" + DelaySeconds + " seconds done"</mca:CSharpValue>
-            </InArgument>
-          </WriteLine>
-          <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
-            <Assign.To>
-              <OutArgument x:TypeArguments="x:String">
-                <mca:CSharpReference x:TypeArguments="x:String">FinalResult</mca:CSharpReference>
-              </OutArgument>
-            </Assign.To>
-            <Assign.Value>
-              <InArgument x:TypeArguments="x:String">DelayDone</InArgument>
-            </Assign.Value>
-          </Assign>
-        </Sequence>
+        <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Boolean">
+              <mca:CSharpReference x:TypeArguments="x:Boolean">Result</mca:CSharpReference>
+            </OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+          </Assign.Value>
+        </Assign>
       </PickBranch>
     </Pick>
-    <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_4" Text="Pick done">
-      <WriteLine.TextWriter>
-        <InArgument x:TypeArguments="si:TextWriter">
-          <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-        </InArgument>
-      </WriteLine.TextWriter>
-    </WriteLine>
-    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sGgFxAXQBAjADeQ4CAQE0BToRAgEvOwVwDAIBCHEFdxECAQI0QzRWAgE0Nws3cAIBMDwHUBQCAR9RB28UAgEJcUNxTgIBB3QLdHACAQM+C0QZAgEpRglPFQIBIFMLVxMCARpZCW4UAgEKPiU+MAIBLkERQWICASpNDU1hAgElSQ9JdAIBIVUPVWcCARtaC2MXAgERZAttFAIBC2EPYXUCARZdEV12AgESazZrPwIBEGcRZ2ICAQw=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sDi8DXg4CAQEzBVwMAgECNAdIFAIBEUkHWxQCAQM2CzwZAgEZPglHEgIBEksLTxMCAQtRCVoSAgEEORE5WwIBGkU1RTkCARhBD0FcAgETTQ9NVwIBDFg1WDoCAQpUD1RcAgEF</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="689,62" />
       <sap2010:ViewStateData Id="ReadLine_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
-      <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="241,546" />
+      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="242,62" />
+      <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="272,320" />
       <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="242,62" />
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="242,62" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="264,288">
+      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="242,62" />
+      <sap2010:ViewStateData Id="PickBranch_2" sap:VirtualizedContainerService.HintSize="272,320" />
+      <sap2010:ViewStateData Id="Pick_1" sap:VirtualizedContainerService.HintSize="698,366" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="720,490">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="PickBranch_2" sap:VirtualizedContainerService.HintSize="294,546" />
-      <sap2010:ViewStateData Id="Pick_1" sap:VirtualizedContainerService.HintSize="689,592" />
-      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="689,62" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="711,920">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Fonlow.Activities.WaitOrDelay_1" sap:VirtualizedContainerService.HintSize="751,1000" />
+      <sap2010:ViewStateData Id="Fonlow.Activities.WaitOrDelay_1" sap:VirtualizedContainerService.HintSize="760,570" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
