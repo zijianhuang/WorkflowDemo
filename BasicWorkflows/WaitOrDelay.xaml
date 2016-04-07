@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.WaitOrDelay" this:WaitOrDelay.DelaySeconds="10"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.WaitOrDelay" this:WaitOrDelay.DelaySeconds="30"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicActivities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -82,7 +82,7 @@
         <PickBranch.Trigger>
           <Delay sap2010:WorkflowViewState.IdRef="Delay_1">
             <InArgument x:TypeArguments="x:TimeSpan">
-              <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(DelaySeconds)</mca:CSharpValue>
+              <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(30)</mca:CSharpValue>
             </InArgument>
           </Delay>
         </PickBranch.Trigger>
@@ -117,14 +117,14 @@
         </InArgument>
       </WriteLine.TextWriter>
     </WriteLine>
-    <sads:DebugSymbol.Symbol>d0BDOlx2c3Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sGgFxAXQBAjADeQ4CAQE0BToRAgEvOwVwDAIBCHEFdxECAQI0QzRWAgE0Nws3cAIBMDwHUBQCAR9RB28UAgEJcUNxTgIBB3QLdHACAQM+C0QZAgEpRglPFQIBIFMLVxMCARpZCW4UAgEKPiU+MAIBLkERQWICASpNDU1hAgElSQ9JdAIBIVUPVXECARtaC2MXAgERZAttFAIBC2EPYXUCARZdEV12AgESazZrPwIBEGcRZ2ICAQw=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0T3JEZWxheS54YW1sGgFxAXQBAjADeQ4CAQE0BToRAgEvOwVwDAIBCHEFdxECAQI0QzRWAgE0Nws3cAIBMDwHUBQCAR9RB28UAgEJcUNxTgIBB3QLdHACAQM+C0QZAgEpRglPFQIBIFMLVxMCARpZCW4UAgEKPiU+MAIBLkERQWICASpNDU1hAgElSQ9JdAIBIVUPVWcCARtaC2MXAgERZAttFAIBC2EPYXUCARZdEV12AgESazZrPwIBEGcRZ2ICAQw=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="688,62" />
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="689,62" />
       <sap2010:ViewStateData Id="ReadLine_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="210,62" />
-      <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="240,546" />
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="241,546" />
       <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="242,62" />
       <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="242,62" />
@@ -136,16 +136,16 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="PickBranch_2" sap:VirtualizedContainerService.HintSize="294,546" />
-      <sap2010:ViewStateData Id="Pick_1" sap:VirtualizedContainerService.HintSize="688,592" />
-      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="688,62" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="710,920">
+      <sap2010:ViewStateData Id="Pick_1" sap:VirtualizedContainerService.HintSize="689,592" />
+      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="689,62" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="711,920">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Fonlow.Activities.WaitOrDelay_1" sap:VirtualizedContainerService.HintSize="750,1000" />
+      <sap2010:ViewStateData Id="Fonlow.Activities.WaitOrDelay_1" sap:VirtualizedContainerService.HintSize="751,1000" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

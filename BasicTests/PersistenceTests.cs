@@ -111,10 +111,10 @@ namespace BasicTests
             Assert.True(isIdle);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndComplete(a, id, readLineBookmark);
+            LoadWithBookmarkAndComplete(a, id, readLineBookmark, "abc");
         }
 
-        static IDictionary<string, object> LoadAndComplete(Activity workflowDefinition, Guid instanceId, string bookmarkName)
+        static IDictionary<string, object> LoadWithBookmarkAndComplete(Activity workflowDefinition, Guid instanceId, string bookmarkName, string bookmarkValue)
         {
             bool completed2 = false;
             bool unloaded2 = false;
@@ -141,11 +141,11 @@ namespace BasicTests
                 InstanceStore = WFDefinitionStore.Instance.Store,
             };
 
-            var input = "Something";//The condition is met
             app2.Load(instanceId);
 
             //this resumes the bookmark setup by readline
-            app2.ResumeBookmark(bookmarkName, input);
+            var br = app2.ResumeBookmark(bookmarkName, bookmarkValue);
+            Assert.Equal(BookmarkResumptionResult.Success, br);
 
             syncEvent.WaitOne();
 
@@ -206,7 +206,7 @@ namespace BasicTests
             Assert.True(unloaded1);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            var dic = LoadAndComplete(a, id, readLineBookmark);
+            var dic = LoadWithBookmarkAndComplete(a, id, readLineBookmark, "Something");
             Assert.Equal("SomethingABC", dic["FinalResult"]);
         }
 
@@ -610,22 +610,28 @@ namespace BasicTests
             Trace.TraceInformation("It took {0} seconds to persist definition", stopwatch.Elapsed.TotalSeconds);
 
             //Now to use a new WorkflowApplication to load the persisted instance.
-            LoadAndCompleteLongRunning(id);
+            var dic =  LoadAndCompleteLongRunning(id);
+            var finalResult = (long)dic["Result"];
+            Assert.Equal(21, finalResult);
+
         }
 
-        void LoadAndCompleteLongRunning(Guid instanceId)
+        IDictionary<string, object> LoadAndCompleteLongRunning(Guid instanceId)
         {
             bool completed2 = false;
             bool unloaded2 = false;
             AutoResetEvent syncEvent = new AutoResetEvent(false);
 
+            IDictionary<string, object> dic = null;
             var app2 = new WorkflowApplication(WFDefinitionStore.Instance[instanceId])
             {
                 Completed = e =>
                 {
                     completed2 = true;
-                    var finalResult = (long)e.Outputs["Result"];
-                    Assert.Equal(21, finalResult);
+                    if (e.CompletionState== ActivityInstanceState.Closed)
+                    {
+                        dic = e.Outputs;
+                    }
                 },
 
                 Unloaded = e =>
@@ -646,10 +652,12 @@ namespace BasicTests
             syncEvent.WaitOne();
             stopwatch2.Stop();
             var seconds = stopwatch2.Elapsed.TotalSeconds;
-            Assert.True(seconds > 3, String.Format("Activity execute for {0} seconds", seconds));//But if the long running process is fired and forgot, the late load and run may be completed immediately.
+       //     Assert.True(seconds > 3, String.Format("Activity execute for {0} seconds", seconds));//But if the long running process is fired and forgot, the late load and run may be completed immediately.
 
             Assert.True(completed2);
             Assert.True(unloaded2);
+
+            return dic;
 
         }
 
@@ -721,7 +729,7 @@ namespace BasicTests
             app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
-                return PersistableIdleAction.None;
+                return PersistableIdleAction.Unload;
             };
 
             app.OnUnhandledException = (e) =>
@@ -744,22 +752,20 @@ namespace BasicTests
 
             app.Unloaded = (eventArgs) =>
             {
-
+                unloaded1 = true;
+                syncEvent.Set();
             };
 
             var id = app.Id;
             app.Run();
-
-
-            Thread.Sleep(200);//So Delay is also waiting
-            app.ResumeBookmark("readLine2", "hahaha");
-
-
             syncEvent.WaitOne();
 
+            Assert.False(completed1);
+            Assert.True(unloaded1);
 
-            Assert.True(completed1);
-            Assert.False(unloaded1);
+            var br = app.ResumeBookmark("readLine2", "hahaha");
+
+            outputs = LoadWithBookmarkAndComplete(a, id, "readLine2", "hahaha");
             Assert.Equal("hahahaABC", outputs["FinalResult"]);
         }
 
@@ -772,12 +778,11 @@ namespace BasicTests
 
             bool completed1 = false;
             bool unloaded1 = false;
-            IDictionary<string, object> outputs = null;
             var app = new WorkflowApplication(a, new Dictionary<string, object>() { { "DelaySeconds", 3 } });
             app.InstanceStore = WFDefinitionStore.Instance.Store;
             app.PersistableIdle = (eventArgs) =>
             {
-                return PersistableIdleAction.None;
+                return PersistableIdleAction.Unload;
             };
 
             app.OnUnhandledException = (e) =>
@@ -789,7 +794,6 @@ namespace BasicTests
             app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
             {
                 completed1 = true;
-                outputs = e.Outputs;
                 syncEvent.Set();
             };
 
@@ -800,7 +804,8 @@ namespace BasicTests
 
             app.Unloaded = (eventArgs) =>
             {
-                // 
+                unloaded1 = true;
+                syncEvent.Set();
             };
 
             var id = app.Id;
@@ -808,10 +813,14 @@ namespace BasicTests
 
 
             syncEvent.WaitOne();
+            Assert.False(completed1);
+            Assert.True(unloaded1);
 
+            WFDefinitionStore.Instance.TryAdd(id, a);
 
-            Assert.True(completed1);
-            Assert.False(unloaded1);
+            var outputs = LoadAndCompleteLongRunning(id);
+    
+
             Assert.Equal("DelayDone", outputs["FinalResult"]);
         }
 
