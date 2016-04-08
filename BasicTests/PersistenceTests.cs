@@ -142,7 +142,6 @@ namespace BasicTests
             };
 
             app2.Load(instanceId);
-
             //this resumes the bookmark setup by readline
             var br = app2.ResumeBookmark(bookmarkName, bookmarkValue);
             Assert.Equal(BookmarkResumptionResult.Success, br);
@@ -766,8 +765,6 @@ namespace BasicTests
 
             Assert.False(completed1);
             Assert.True(unloaded1);
-
-            var br = app.ResumeBookmark("readLine2", "hahaha");
 
             outputs = LoadWithBookmarkAndComplete(a, id, "Wakeup", "hahaha");
             Assert.True((bool)outputs["Result"]);
