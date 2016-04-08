@@ -11,6 +11,7 @@
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="FinalResult" Type="OutArgument(x:String)" />
+    <x:Property Name="BookmarkName" Type="InArgument(x:String)" />
   </x:Members>
   <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
   <sap2010:WorkflowViewState.IdRef>Fonlow.Activities.ReadLineReturnOrThrow_1</sap2010:WorkflowViewState.IdRef>
@@ -44,7 +45,12 @@
   </TextExpression.ReferencesForImplementation>
   <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
     <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Before readline" />
-    <fa:ReadLine BookmarkName="ReadLine1" sap2010:WorkflowViewState.IdRef="ReadLine_1">
+    <fa:ReadLine sap2010:WorkflowViewState.IdRef="ReadLine_1">
+      <fa:ReadLine.BookmarkName>
+        <InArgument x:TypeArguments="x:String">
+          <mca:CSharpValue x:TypeArguments="x:String">BookmarkName</mca:CSharpValue>
+        </InArgument>
+      </fa:ReadLine.BookmarkName>
       <fa:ReadLine.Result>
         <OutArgument x:TypeArguments="x:String">
           <mca:CSharpReference x:TypeArguments="x:String">FinalResult</mca:CSharpReference>
@@ -52,7 +58,7 @@
       </fa:ReadLine.Result>
     </fa:ReadLine>
     <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="After readline" />
-    <sads:DebugSymbol.Symbol>d0pDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xSZWFkTGluZVJldHVybk9yVGhyb3cueGFtbAgtAzgOAgEBLgUuVwIBCC8FNRMCAQQ2BTZWAgECLkMuVAIBCS8fLyoCAQcyCzJcAgEFNkM2UwIBAw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0pDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xSZWFkTGluZVJldHVybk9yVGhyb3cueGFtbAguAz4OAgEBLwUvVwIBCzAFOxMCAQQ8BTxWAgECL0MvVAIBDDMLM1UCAQg4CzhcAgEFPEM8UwIBAw==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
