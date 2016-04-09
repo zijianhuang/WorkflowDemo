@@ -571,7 +571,6 @@ namespace BasicTests
             syncEvent.WaitOne();
             stopwatch2.Stop();
             var seconds = stopwatch2.Elapsed.TotalSeconds;
-       //     Assert.True(seconds > 3, String.Format("Activity execute for {0} seconds", seconds));//But if the long running process is fired and forgot, the late load and run may be completed immediately.
 
             Assert.True(completed2);
             Assert.True(unloaded2);
@@ -635,12 +634,130 @@ namespace BasicTests
 
 
         [Fact]
-        public void TestWaitorDelayWithBookmarkToWakup()
+        public void TestWaitForSignalOrDelayWithBookmarkToWakup()
         {
+            var bookmarkName = "Wakup Now";
             var a = new WaitForSignalOrDelay()
             {
                 Duration = TimeSpan.FromSeconds(10),
-                BookmarkName = "Wakeup",
+                BookmarkName = bookmarkName,
+            };
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+            IDictionary<string, object> outputs = null;
+            var app = new WorkflowApplication(a)
+            {
+                InstanceStore = WFDefinitionStore.Instance.Store,
+                PersistableIdle = (eventArgs) =>
+                {
+                    return PersistableIdleAction.Unload;
+                },
+
+                OnUnhandledException = (e) =>
+                {
+
+                    return UnhandledExceptionAction.Abort;
+                },
+
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completed1 = true;
+                    outputs = e.Outputs;
+                    syncEvent.Set();
+                },
+
+                Aborted = (eventArgs) =>
+                {
+
+                },
+
+                Unloaded = (eventArgs) =>
+                {
+                    unloaded1 = true;
+                    syncEvent.Set();
+                }
+            };
+
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            outputs = LoadWithBookmarkAndComplete(a, id, bookmarkName, null);//Wakup does not need bookmark value
+            Assert.True((bool)outputs["Result"]);
+        }
+
+        [Fact]
+        public void TestWaitForSignalOrDelayAndWakupAfterPendingTimeExpire()
+        {
+            var a = new WaitForSignalOrDelay()
+            {
+                Duration=TimeSpan.FromSeconds(10),
+                BookmarkName="Wakeup",
+            };
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+            var app = new WorkflowApplication(a)
+            {
+                InstanceStore = WFDefinitionStore.Instance.Store,
+                PersistableIdle = (eventArgs) =>
+                {
+                    return PersistableIdleAction.Unload;
+                },
+
+                OnUnhandledException = (e) =>
+                {
+                    return UnhandledExceptionAction.Abort;
+                },
+
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completed1 = true;
+                    syncEvent.Set();
+                },
+
+
+                Unloaded = (eventArgs) =>
+                {
+                    unloaded1 = true;
+                    syncEvent.Set();
+                },
+            };
+
+            var id = app.Id;
+            app.Run();
+
+
+            syncEvent.WaitOne();
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            WFDefinitionStore.Instance.TryAdd(id, a);
+
+            Thread.Sleep(5000); // from 1 seconds to 9 seconds, the total time of the test case is the same.
+
+            var outputs = LoadAndCompleteLongRunning(id);
+
+            Assert.False((bool)outputs["Result"]);
+        }
+
+
+        [Fact]
+        public void TestSleepingWorkflowWithBookmarkToWakup()
+        {
+            var bookmarkName = "Wakup Now";
+            var a = new WaitForSignalOrDelayWorkflow()
+            {
+                Duration = TimeSpan.FromSeconds(10),
+                BookmarkName = bookmarkName,
             };
 
             AutoResetEvent syncEvent = new AutoResetEvent(false);
@@ -686,69 +803,10 @@ namespace BasicTests
             Assert.False(completed1);
             Assert.True(unloaded1);
 
-            outputs = LoadWithBookmarkAndComplete(a, id, "Wakeup", "hahaha");
-            Assert.True((bool)outputs["Result"]);
+            outputs = LoadWithBookmarkAndComplete(a, id, bookmarkName, null);//Wakup does not need bookmark value
+            Assert.Equal("Someone waked me up", (string)outputs["Result"]);
         }
 
-        [Fact]
-        public void TestWaitorDelayWithDelayToWakeup()
-        {
-            var a = new WaitForSignalOrDelay()
-            {
-                Duration=TimeSpan.FromSeconds(10),
-                BookmarkName="Wakeup",
-            };
-
-            AutoResetEvent syncEvent = new AutoResetEvent(false);
-
-            bool completed1 = false;
-            bool unloaded1 = false;
-            var app = new WorkflowApplication(a);
-            app.InstanceStore = WFDefinitionStore.Instance.Store;
-            app.PersistableIdle = (eventArgs) =>
-            {
-                return PersistableIdleAction.Unload;
-            };
-
-            app.OnUnhandledException = (e) =>
-            {
-                // 
-                return UnhandledExceptionAction.Abort;
-            };
-
-            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
-            {
-                completed1 = true;
-                syncEvent.Set();
-            };
-
-            app.Aborted = (eventArgs) =>
-            {
-                // 
-            };
-
-            app.Unloaded = (eventArgs) =>
-            {
-                unloaded1 = true;
-                syncEvent.Set();
-            };
-
-            var id = app.Id;
-            app.Run();
-
-
-            syncEvent.WaitOne();
-            Assert.False(completed1);
-            Assert.True(unloaded1);
-
-            WFDefinitionStore.Instance.TryAdd(id, a);
-
-            Thread.Sleep(5000); // from 1 seconds to 9 seconds, the total time of the test case is the same.
-
-            var outputs = LoadAndCompleteLongRunning(id);
-
-            Assert.False((bool)outputs["Result"]);
-        }
 
 
         [Fact]
@@ -815,6 +873,122 @@ namespace BasicTests
 
         }
 
+
+        [Fact]
+        public void TestWaitForSignalOrAlarmWithBookmarkToWakup()
+        {
+            var bookmarkName = "Wakup Now";
+            var a = new WaitForSignalOrAlarm()
+            {
+                AlarmTime=DateTime.Now.AddSeconds(10),
+                BookmarkName = bookmarkName,
+            };
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+            IDictionary<string, object> outputs = null;
+            var app = new WorkflowApplication(a)
+            {
+                InstanceStore = WFDefinitionStore.Instance.Store,
+                PersistableIdle = (eventArgs) =>
+                {
+                    return PersistableIdleAction.Unload;
+                },
+
+                OnUnhandledException = (e) =>
+                {
+
+                    return UnhandledExceptionAction.Abort;
+                },
+
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completed1 = true;
+                    outputs = e.Outputs;
+                    syncEvent.Set();
+                },
+
+                Aborted = (eventArgs) =>
+                {
+                    syncEvent.Set();
+                },
+
+                Unloaded = (eventArgs) =>
+                {
+                    unloaded1 = true;
+                    syncEvent.Set();
+                }
+            };
+
+            var id = app.Id;
+            app.Run();
+            syncEvent.WaitOne();
+
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            outputs = LoadWithBookmarkAndComplete(a, id, bookmarkName, null);//Wakup does not need bookmark value
+            Assert.True((bool)outputs["Result"]);
+        }
+
+        [Fact]
+        public void TestWaitForSignalOrAlarmAndWakupAfterPendingTimeExpire()
+        {
+            var a = new WaitForSignalOrAlarm()
+            {
+                AlarmTime = DateTime.Now.AddSeconds(10),
+                BookmarkName = "Wakeup",
+            };
+
+            AutoResetEvent syncEvent = new AutoResetEvent(false);
+
+            bool completed1 = false;
+            bool unloaded1 = false;
+            var app = new WorkflowApplication(a)
+            {
+                InstanceStore = WFDefinitionStore.Instance.Store,
+                PersistableIdle = (eventArgs) =>
+                {
+                    return PersistableIdleAction.Unload;
+                },
+
+                OnUnhandledException = (e) =>
+                {
+                    return UnhandledExceptionAction.Abort;
+                },
+
+                Completed = delegate (WorkflowApplicationCompletedEventArgs e)
+                {
+                    completed1 = true;
+                    syncEvent.Set();
+                },
+
+
+                Unloaded = (eventArgs) =>
+                {
+                    unloaded1 = true;
+                    syncEvent.Set();
+                },
+            };
+
+            var id = app.Id;
+            app.Run();
+
+
+            syncEvent.WaitOne();
+            Assert.False(completed1);
+            Assert.True(unloaded1);
+
+            WFDefinitionStore.Instance.TryAdd(id, a);
+
+            Thread.Sleep(5000); // from 1 seconds to 9 seconds, the total time of the test case is the same.
+
+            var outputs = LoadAndCompleteLongRunning(id);
+
+            Assert.False((bool)outputs["Result"]);
+        }
 
 
 

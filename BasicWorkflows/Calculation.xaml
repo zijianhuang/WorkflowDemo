@@ -103,7 +103,7 @@
     </If>
     <Delay sap2010:WorkflowViewState.IdRef="Delay_1">
       <InArgument x:TypeArguments="x:TimeSpan">
-        <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(15)</mca:CSharpValue>
+        <mca:CSharpValue x:TypeArguments="x:TimeSpan">TimeSpan.FromSeconds(3)</mca:CSharpValue>
       </InArgument>
     </Delay>
     <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
@@ -118,7 +118,7 @@
         </InArgument>
       </Assign.Value>
     </Assign>
-    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sFi8Deg4CAQE2BUYTAgE4RwVnCgIBHGgFbA0CARNtBXgOAgECOQs5VAIBST4LPkoCAUFDC0NKAgE5SgtKWQIBHU4JYBQCAShjCWUUAgElaglqYQIBFHULdUwCAQtwC3BWAgEDUwtfEAIBKWQLZGQCASZWEVZWAgEqWg9aXQIBNl0PXWQCATRkSWRhAgEnWk1aWgIBN11NXWECATU=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xDYWxjdWxhdGlvbi54YW1sFi8Deg4CAQE2BUYTAgE4RwVnCgIBHGgFbA0CARNtBXgOAgECOQs5VAIBST4LPkoCAUFDC0NKAgE5SgtKWQIBHU4JYBQCAShjCWUUAgElaglqYAIBFHULdUwCAQtwC3BWAgEDUwtfEAIBKWQLZGQCASZWEVZWAgEqWg9aXQIBNl0PXWQCATRkSWRhAgEnWk1aWgIBN11NXWECATU=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>

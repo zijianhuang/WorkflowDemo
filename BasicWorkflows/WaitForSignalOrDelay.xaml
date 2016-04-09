@@ -51,13 +51,14 @@
     <Pick sap2010:WorkflowViewState.IdRef="Pick_1">
       <PickBranch DisplayName="Branch1" sap2010:WorkflowViewState.IdRef="PickBranch_1">
         <PickBranch.Trigger>
-          <fa:ReadLine sap2010:WorkflowViewState.IdRef="ReadLine_1">
-            <fa:ReadLine.BookmarkName>
+          <fa:Wakeup>
+            <fa:Wakeup.BookmarkName>
               <InArgument x:TypeArguments="x:String">
                 <mca:CSharpValue x:TypeArguments="x:String">BookmarkName</mca:CSharpValue>
               </InArgument>
-            </fa:ReadLine.BookmarkName>
-          </fa:ReadLine>
+            </fa:Wakeup.BookmarkName>
+            <sap2010:WorkflowViewState.IdRef>Wakeup_1</sap2010:WorkflowViewState.IdRef>
+          </fa:Wakeup>
         </PickBranch.Trigger>
         <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
           <Assign.To>
@@ -90,11 +91,11 @@
         </Assign>
       </PickBranch>
     </Pick>
-    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0Rm9yU2lnbmFsT3JEZWxheS54YW1sDi8DXg4CAQEzBVwMAgECNAdIFAIBEUkHWxQCAQM2CzwZAgEZPglHEgIBEksLTxMCAQtRCVoSAgEEORE5WwIBGkU1RTkCARhBD0FcAgETTQ9NVwIBDFg1WDoCAQpUD1RcAgEF</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xXYWl0Rm9yU2lnbmFsT3JEZWxheS54YW1sDi8DXw4CAQEzBV0MAgECNAdJFAIBEUoHXBQCAQM2Cz0XAgEZPwlIEgIBEkwLUBMCAQtSCVsSAgEEORE5WwIBGkY1RjkCARhCD0JcAgETTg9OVwIBDFk1WToCAQpVD1VcAgEF</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="ReadLine_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Wakeup_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="242,62" />
       <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="272,320" />
       <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="200,22" />
