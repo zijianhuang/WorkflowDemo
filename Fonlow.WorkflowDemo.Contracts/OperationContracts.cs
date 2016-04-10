@@ -8,7 +8,7 @@ using System.ServiceModel;
 
 namespace Fonlow.WorkflowDemo.Contracts
 {
-    [ServiceContract(Namespace =Constants.ContractNamespace)]
+    [ServiceContract(Namespace = Constants.ContractNamespace)]
     public interface IMath
     {
         [OperationContract]
@@ -18,10 +18,10 @@ namespace Fonlow.WorkflowDemo.Contracts
         [OperationContract]
         long CalculateFibonacciSeries(long n);
     }
-    
 
 
-   [ServiceContract(Namespace = Constants.ContractNamespace)]
+
+    [ServiceContract(Namespace = Constants.ContractNamespace)]
     public interface IBookService
     {
         [OperationContract]
@@ -29,6 +29,16 @@ namespace Fonlow.WorkflowDemo.Contracts
 
         [OperationContract(IsOneWay = true)]
         void Checkout();
+    }
+
+    [ServiceContract(Namespace = Constants.ContractNamespace)]
+    public interface IWakeup
+    {
+        [OperationContract]
+        Guid Create(string bookmarkName, TimeSpan duration);
+
+        [OperationContract]
+        bool Wakeup(string bookmarkName);
     }
 
 }

@@ -93,42 +93,37 @@ namespace Fonlow.Activities
         public WaitForSignalOrAlarm()
         {
             Implementation = () =>
-            new Sequence()
-            {
-                Activities = {
-                    new Pick()
-                    {
-                        Branches = {
-                           new PickBranch
+                new Pick()
+                {
+                    Branches = {
+                        new PickBranch
+                        {
+                            Trigger = new Wakeup()
                             {
-                               Trigger = new Wakeup()
-                               {
-                                   BookmarkName=new InArgument<string>((c)=> BookmarkName.Get(c))
-                               },
+                                BookmarkName=new InArgument<string>((c)=> BookmarkName.Get(c))
+                            },
 
-                               Action = new Assign<bool>()
-                               {
-                                   To= new ArgumentReference<bool> { ArgumentName = "Result" },
-                                   Value= true,
-                               }
-                           },
-                           new PickBranch
+                            Action = new Assign<bool>()
                             {
-                               Trigger = new Delay
-                               {
-                                   Duration = new InArgument<TimeSpan>((c)=> GetDuration(AlarmTime.Get(c)))
-                               },
-                               Action = new Assign<bool>()
-                               {
-                                   To=new ArgumentReference<bool> { ArgumentName = "Result" },
-                                   Value= false,
-                               }
-                           }
-                           }
+                                To= new ArgumentReference<bool> { ArgumentName = "Result" },
+                                Value= true,
+                            }
+                        },
+                        new PickBranch
+                        {
+                            Trigger = new Delay
+                            {
+                                Duration = new InArgument<TimeSpan>((c)=> GetDuration(AlarmTime.Get(c)))
+                            },
+                            Action = new Assign<bool>()
+                            {
+                                To=new ArgumentReference<bool> { ArgumentName = "Result" },
+                                Value= false,
+                            }
+                        }
+                        }
 
-                    }
-                }
-            };
+                };
 
         }
 

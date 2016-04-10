@@ -13,6 +13,9 @@ using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Activities;
 using System.ServiceModel.Activities.Description;
+using Fonlow.Activities.ServiceModel;
+using System.ServiceModel.Description;
+using System.Activities.Statements;
 
 namespace BasicTests
 {
@@ -30,12 +33,14 @@ namespace BasicTests
                 // Add service endpoint.
                 host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
 
-                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI");
-                instanceStoreBehavior.HostLockRenewalPeriod = new TimeSpan(0, 0, 5);
-                instanceStoreBehavior.RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2);
-                instanceStoreBehavior.InstanceCompletionAction = InstanceCompletionAction.DeleteAll;
-                instanceStoreBehavior.InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry;
-                instanceStoreBehavior.InstanceEncodingOption = InstanceEncodingOption.GZip;
+                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI")
+                {
+                    HostLockRenewalPeriod = new TimeSpan(0, 0, 5),
+                    RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2),
+                    InstanceCompletionAction = InstanceCompletionAction.DeleteAll,
+                    InstanceLockedExceptionAction = InstanceLockedExceptionAction.AggressiveRetry,
+                    InstanceEncodingOption = InstanceEncodingOption.GZip,
+                };
                 host.Description.Behaviors.Add(instanceStoreBehavior);
 
                 host.Open();
@@ -81,6 +86,56 @@ namespace BasicTests
             Assert.Equal(typeof(System.Runtime.DurableInstancing.InstancePersistenceCommandException), ex.InnerException.GetType());
             Assert.Equal(CommunicationState.Faulted, host.State);//so can't be disposed.
         }
+
+
+        [Fact]
+        public void TestWaitForSignalOrDelay()
+        {
+            var uri = new Uri( "net.tcp://localhost/");
+            Guid id;
+            // Create service host.
+            using (var host = new ServiceHost(typeof( Fonlow.WorkflowDemo.Contracts.WakeupService), uri))
+            {
+                host.AddServiceEndpoint("Fonlow.WorkflowDemo.Contracts.IWakeup", new NetTcpBinding(), "wakeup");
+
+                ServiceDebugBehavior debug = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+
+                if (debug == null)
+                {
+                    host.Description.Behaviors.Add(
+                         new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+                }
+                else
+                {
+                    // make sure setting is turned ON
+                    if (!debug.IncludeExceptionDetailInFaults)
+                    {
+                        debug.IncludeExceptionDetailInFaults = true;
+                    }
+                }
+
+
+                host.Open();
+                Assert.Equal(CommunicationState.Opened, host.State);
+
+
+                // Create a client that sends a message to create an instance of the workflow.
+                var client = ChannelFactory<Fonlow.WorkflowDemo.Contracts.IWakeup>.CreateChannel(new NetTcpBinding(), new EndpointAddress(new Uri(uri, "wakeup")));
+                id = client.Create("Service wakeup", TimeSpan.FromSeconds(100));
+                Assert.NotEqual(Guid.Empty, id);
+
+                Thread.Sleep(2000);
+
+                //       client.CreateWithInstanceId(id, null);
+                //resume bookmark
+                var r = client.Wakeup(id, "Service wakeup");
+                Assert.True(r);
+
+                Thread.Sleep(5000);
+                host.Close();
+            }
+        }
+
 
     }
 }

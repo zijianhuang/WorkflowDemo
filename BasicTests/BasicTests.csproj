@@ -42,6 +42,7 @@
     <Reference Include="System.Activities.DurableInstancing" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.DurableInstancing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activities" />
     <Reference Include="System.Xaml" />
@@ -75,6 +76,7 @@
     <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="PersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WakeupService.cs" />
     <Compile Include="WorkflowApplicationTests.cs" />
     <Compile Include="WorkflowServiceHostPersistenceTests.cs" />
     <Compile Include="WorkflowServiceHostTests.cs" />
@@ -91,6 +93,10 @@
     <ProjectReference Include="..\BasicWorkflows\BasicWorkflows.csproj">
       <Project>{da3060cb-f4af-48d8-9b29-e43e3f8f4f1f}</Project>
       <Name>BasicWorkflows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fonlow.WFWCFLib\Fonlow.WFWCFLib.csproj">
+      <Project>{d09692a8-cd01-46ac-9b4a-58a4b6c13dc2}</Project>
+      <Name>Fonlow.WFWCFLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fonlow.Workflow.Persistence\Fonlow.Workflow.Persistence.csproj">
       <Project>{116fab86-5681-4b2e-ba3c-d242c5800aab}</Project>
