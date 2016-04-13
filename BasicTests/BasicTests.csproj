@@ -76,7 +76,7 @@
     <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="PersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WakeupService.cs" />
+    <Compile Include="WCFWithWorkflowTests.cs" />
     <Compile Include="WorkflowApplicationTests.cs" />
     <Compile Include="WorkflowServiceHostPersistenceTests.cs" />
     <Compile Include="WorkflowServiceHostTests.cs" />
@@ -105,6 +105,10 @@
     <ProjectReference Include="..\SillyHelpers\SillyHelpers.csproj">
       <Project>{83bff0bd-049f-445f-afc8-7b2e3c4c3dfb}</Project>
       <Name>SillyHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WCFWithWF\WCFWithWF.csproj">
+      <Project>{dccc022f-a72f-463d-824a-3c92404a5ee6}</Project>
+      <Name>WCFWithWF</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

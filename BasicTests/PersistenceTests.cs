@@ -154,6 +154,7 @@ namespace BasicTests
             };
 
             app2.Load(instanceId);
+            app2.Run();//optional
             var br = app2.ResumeBookmark(bookmarkName, bookmarkValue);
             Assert.Equal(BookmarkResumptionResult.Success, br);
 
