@@ -11,12 +11,24 @@ using System.ServiceModel.Channels;
 
 namespace Fonlow.Activities.ServiceModel
 {
+    [ServiceContract]
+    public interface IWorkflowWithBookmark
+    {
+        [OperationContract(Name = "Create")]
+        Guid Create(IDictionary<string, object> inputs);
+
+
+        [OperationContract(Name = "ResumeBookmark")]
+        void ResumeBookmark(Guid instanceId, string bookmarkName, string message);
+
+    }
+
 
     public class ResumeBookmarkEndpoint : WorkflowHostingEndpoint
     {
 
         public ResumeBookmarkEndpoint(Binding binding, EndpointAddress address)
-            : base(typeof(IWorkflowCreation), binding, address)
+            : base(typeof(IWorkflowWithBookmark), binding, address)
         {
         }
 
@@ -29,8 +41,7 @@ namespace Fonlow.Activities.ServiceModel
                 return Guid.Empty;
             }
             //CreateWithInstanceId or ResumeBookmark called. InstanceId is specified by client
-            else if (operationContext.IncomingMessageHeaders.Action.EndsWith("CreateWithInstanceId") ||
-                    operationContext.IncomingMessageHeaders.Action.EndsWith("ResumeBookmark"))
+            else if (operationContext.IncomingMessageHeaders.Action.EndsWith("ResumeBookmark"))
             {
                 return (Guid)inputs[0];
             }
@@ -57,18 +68,6 @@ namespace Fonlow.Activities.ServiceModel
                 }
                 //reply to client with the InstanceId
                 responseContext.SendResponse(instanceId, null);
-            }
-            else if (operationContext.IncomingMessageHeaders.Action.EndsWith("CreateWithInstanceId"))
-            {
-                Dictionary<string, object> arguments = (Dictionary<string, object>)inputs[0];
-                if (arguments != null && arguments.Count > 0)
-                {
-                    foreach (KeyValuePair<string, object> pair in arguments)
-                    {
-                        //arguments for the workflow
-                        creationContext.WorkflowArguments.Add(pair.Key, pair.Value);
-                    }
-                }
             }
             else
             {
@@ -97,21 +96,5 @@ namespace Fonlow.Activities.ServiceModel
             return bookmark;
         }
     }
-
-    //ServiceContract exposed on the endpoint
-    [ServiceContract(Name = "IWorkflowCreation")]
-    public interface IWorkflowCreation
-    {
-        [OperationContract(Name = "Create")]
-        Guid Create(IDictionary<string, object> inputs);
-
-        [OperationContract(Name = "CreateWithInstanceId", IsOneWay = true)]
-        void CreateWithInstanceId(Guid instanceId, IDictionary<string, object> inputs);
-
-        [OperationContract(Name = "ResumeBookmark")]
-        void ResumeBookmark(Guid instanceId, string bookmarkName, string message);
-
-    }
-
 }
 
