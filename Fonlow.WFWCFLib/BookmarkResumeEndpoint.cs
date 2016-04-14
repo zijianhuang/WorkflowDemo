@@ -86,6 +86,8 @@ namespace Fonlow.Activities.ServiceModel
                 bookmark = new Bookmark((string)inputs[1]);
                 //value supplied by client as argument to IWorkflowCreation.ResumeBookmark
                 value = (string)inputs[2];
+
+                responseContext.SendResponse(null, null);//Not OneWay anymore.
             }
             else
             {
@@ -106,7 +108,7 @@ namespace Fonlow.Activities.ServiceModel
         [OperationContract(Name = "CreateWithInstanceId", IsOneWay = true)]
         void CreateWithInstanceId(Guid instanceId, IDictionary<string, object> inputs);
 
-        [OperationContract(Name = "ResumeBookmark", IsOneWay = true)]
+        [OperationContract(Name = "ResumeBookmark")]
         void ResumeBookmark(Guid instanceId, string bookmarkName, string message);
 
     }

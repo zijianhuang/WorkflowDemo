@@ -22,11 +22,9 @@ namespace BasicTests
     public class NonServiceWorkflowTests
     {
 
-        [Fact]
-        public void TestWaitForSignalOrDelay()
+        static WorkflowServiceHost CreateHost(System.ServiceModel.Channels.Binding binding, EndpointAddress endpointAddress)
         {
-            // Create service host.
-            var host = new WorkflowServiceHost(new WaitForSignalOrDelayWorkflow(), new Uri("net.tcp://localhost"));
+            var host = new WorkflowServiceHost(new WaitForSignalOrDelayWorkflow());
             {
                 SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI")
                 {
@@ -45,52 +43,64 @@ namespace BasicTests
                     TimeToPersist = TimeSpan.Zero,
                     TimeToUnload = TimeSpan.Zero,
                 };
-
                 host.Description.Behaviors.Add(idleBehavior);
 
-                var endpointAddress = new EndpointAddress("net.tcp://localhost/nonservice/wakeup");
-                var endpointBinding = new NetTcpBinding(SecurityMode.None);
-                ResumeBookmarkEndpoint endpoint = new ResumeBookmarkEndpoint(endpointBinding, endpointAddress);
+                WorkflowUnhandledExceptionBehavior unhandledExceptionBehavior = new WorkflowUnhandledExceptionBehavior()
+                {
+                    Action = WorkflowUnhandledExceptionAction.Terminate,
+                };
+                host.Description.Behaviors.Add(unhandledExceptionBehavior);
+
+                ResumeBookmarkEndpoint endpoint = new ResumeBookmarkEndpoint(binding, endpointAddress);
                 host.AddServiceEndpoint(endpoint);
 
-                //ServiceDebugBehavior debug = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+                ServiceDebugBehavior debug = host.Description.Behaviors.Find<ServiceDebugBehavior>();
 
-                //if (debug == null)
-                //{
-                //    host.Description.Behaviors.Add(
-                //         new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
-                //}
-                //else
-                //{
-                //    // make sure setting is turned ON
-                //    if (!debug.IncludeExceptionDetailInFaults)
-                //    {
-                //        debug.IncludeExceptionDetailInFaults = true;
-                //    }
-                //}
+                if (debug == null)
+                {
+                    host.Description.Behaviors.Add(
+                         new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+                }
+                else
+                {
+                    // make sure setting is turned ON
+                    if (!debug.IncludeExceptionDetailInFaults)
+                    {
+                        debug.IncludeExceptionDetailInFaults = true;
+                    }
+                }
 
-
-                host.Open();
-                Assert.Equal(CommunicationState.Opened, host.State);
-
-
-                IWorkflowCreation client = new ChannelFactory<IWorkflowCreation>(endpointBinding, endpointAddress).CreateChannel();
-                //create an instance
-                            Guid id = client.Create(new Dictionary<string, object> { { "BookmarkName", "NonService Wakeup" }, { "Duration", TimeSpan.FromSeconds(100) } });
-               // Guid id = client.Create(new Dictionary<string, object> { { "BookmarkName", "NonService Wakeup" } });
-               // Guid id = client.Create(null);
-                Assert.NotEqual(Guid.Empty, id);
-
-                Thread.Sleep(2000);//so the service may have time to persist.
-
-             //   client.CreateWithInstanceId(id, null);
-
-                 client.ResumeBookmark(id, "NonService Wakeup", "something");
-                //Assert.Equal("Someone waked me up", r["Result"]);
-
-                Thread.Sleep(2000);
             }
+
+            return host;
         }
+
+
+        [Fact]
+        public void TestWaitForSignalOrDelay()
+        {
+            var endpointAddress = new EndpointAddress("net.tcp://localhost/nonservice/wakeup");
+            var endpointBinding = new NetTcpBinding(SecurityMode.None);
+            var host = CreateHost(endpointBinding, endpointAddress);
+
+            host.Open();
+            Assert.Equal(CommunicationState.Opened, host.State);
+
+
+            IWorkflowCreation client = new ChannelFactory<IWorkflowCreation>(endpointBinding, endpointAddress).CreateChannel();
+            //create an instance
+            Guid id = client.Create(new Dictionary<string, object> { { "BookmarkName", "NonService Wakeup" }, { "Duration", TimeSpan.FromSeconds(100) } });
+            Assert.NotEqual(Guid.Empty, id);
+
+            Thread.Sleep(2000);//so the service may have time to persist.
+
+            //   client.CreateWithInstanceId(id, null);
+
+            client.ResumeBookmark(id, "NonService Wakeup", "something");
+
+            Thread.Sleep(2000);
+        }
+
 
         //[Fact]
         //public void TestWaitForSignalOrDelayAfterDelay()
@@ -184,5 +194,6 @@ namespace BasicTests
             Debug.WriteLine(message);
         }
     }
+
 
 }
