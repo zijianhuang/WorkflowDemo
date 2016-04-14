@@ -76,6 +76,7 @@
     <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="PersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NonServiceWFTests.cs" />
     <Compile Include="WCFWithWorkflowTests.cs" />
     <Compile Include="WorkflowApplicationTests.cs" />
     <Compile Include="WorkflowServiceHostPersistenceTests.cs" />

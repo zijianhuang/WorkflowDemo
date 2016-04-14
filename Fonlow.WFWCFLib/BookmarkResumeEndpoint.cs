@@ -20,6 +20,7 @@ namespace Fonlow.Activities.ServiceModel
         {
         }
 
+
         protected override Guid OnGetInstanceId(object[] inputs, OperationContext operationContext)
         {
             //Create called
@@ -57,9 +58,9 @@ namespace Fonlow.Activities.ServiceModel
                 //reply to client with the InstanceId
                 responseContext.SendResponse(instanceId, null);
             }
-            else if (operationContext.IncomingMessageHeaders.Action.EndsWith("ResumeBookmark"))
+            else if (operationContext.IncomingMessageHeaders.Action.EndsWith("CreateWithInstanceId"))
             {
-                var arguments = inputs[2] as Dictionary<string, object>;
+                Dictionary<string, object> arguments = (Dictionary<string, object>)inputs[0];
                 if (arguments != null && arguments.Count > 0)
                 {
                     foreach (KeyValuePair<string, object> pair in arguments)
@@ -68,8 +69,6 @@ namespace Fonlow.Activities.ServiceModel
                         creationContext.WorkflowArguments.Add(pair.Key, pair.Value);
                     }
                 }
-
-                responseContext.SendResponse(null, null);
             }
             else
             {
@@ -77,7 +76,6 @@ namespace Fonlow.Activities.ServiceModel
             }
             return creationContext;
         }
-
         protected override System.Activities.Bookmark OnResolveBookmark(object[] inputs, OperationContext operationContext, WorkflowHostingResponseContext responseContext, out object value)
         {
             Bookmark bookmark = null;
@@ -91,7 +89,8 @@ namespace Fonlow.Activities.ServiceModel
             }
             else
             {
-               // throw new NotImplementedException(operationContext.IncomingMessageHeaders.Action);
+                //  throw new NotImplementedException(operationContext.IncomingMessageHeaders.Action);
+                responseContext.SendResponse(typeof(void), null);
             }
             return bookmark;
         }
@@ -104,10 +103,10 @@ namespace Fonlow.Activities.ServiceModel
         [OperationContract(Name = "Create")]
         Guid Create(IDictionary<string, object> inputs);
 
-        [OperationContract(Name = "CreateWithInstanceId", IsOneWay = false)]
+        [OperationContract(Name = "CreateWithInstanceId", IsOneWay = true)]
         void CreateWithInstanceId(Guid instanceId, IDictionary<string, object> inputs);
 
-        [OperationContract(Name = "ResumeBookmark", IsOneWay = false)]
+        [OperationContract(Name = "ResumeBookmark", IsOneWay = true)]
         void ResumeBookmark(Guid instanceId, string bookmarkName, string message);
 
     }

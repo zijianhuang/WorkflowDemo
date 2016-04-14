@@ -26,11 +26,11 @@ namespace Fonlow.Activities
                 InstanceEncodingOption = InstanceEncodingOption.GZip,
 
             };
-
-            var handle = Store.CreateInstanceHandle();
-            var view = Store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(50));
-            handle.Free();
-            Store.DefaultInstanceOwner = view.InstanceOwner;
+            
+            //var handle = Store.CreateInstanceHandle();
+            //var view = Store.Execute(handle, new CreateWorkflowOwnerCommand(), TimeSpan.FromSeconds(50));
+            //handle.Free();
+            //Store.DefaultInstanceOwner = view.InstanceOwner;
 
         }
 
