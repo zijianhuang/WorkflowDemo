@@ -16,6 +16,7 @@ namespace Fonlow.WorkflowDemo.Contracts
         TriangleType GetTriangleType(int side1, int side2, int side3);
 
         [OperationContract]
+        [return: System.ServiceModel.MessageParameterAttribute(Name = "CalculateFibonacciSeriesResult")]
         long CalculateFibonacciSeries(long n);
     }
 
@@ -25,19 +26,22 @@ namespace Fonlow.WorkflowDemo.Contracts
     public interface IBookService
     {
         [OperationContract]
-        void Buy(string bookName);
+        void Buy(int customerId, string bookName);
 
-        [OperationContract(IsOneWay = true)]
-        void Checkout();
+        [OperationContract]
+        [return: System.ServiceModel.MessageParameterAttribute(Name = "CheckoutResult")]
+        string Checkout(int customerId);
     }
 
     [ServiceContract(Namespace = Constants.ContractNamespace)]
     public interface IWakeup
     {
         [OperationContract]
+        [return: System.ServiceModel.MessageParameterAttribute(Name = "CreateResult")]
         Guid Create(string bookmarkName, TimeSpan duration);
 
         [OperationContract]
+        [return: System.ServiceModel.MessageParameterAttribute(Name = "WakerupResult")]
         bool Wakeup(string bookmarkName);
     }
 

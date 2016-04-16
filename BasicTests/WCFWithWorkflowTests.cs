@@ -22,6 +22,7 @@ namespace BasicTests
     public class WCFWithWorkflowTests
     {
         readonly Uri baseUri = new Uri("net.tcp://localhost/");
+
         ServiceHost CreateHost()
         {
             var host = new ServiceHost(typeof(Fonlow.WorkflowDemo.Contracts.WakeupService), baseUri);

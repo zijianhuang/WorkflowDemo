@@ -36,13 +36,13 @@
         <p1:AssemblyReference>PresentationCore</p1:AssemblyReference>
         <p1:AssemblyReference>PresentationFramework</p1:AssemblyReference>
         <p1:AssemblyReference>System.Activities.Presentation</p1:AssemblyReference>
-        <p1:AssemblyReference>System.Data.DataSetExtensions</p1:AssemblyReference>
         <p1:AssemblyReference>System.Web.DynamicData</p1:AssemblyReference>
         <p1:AssemblyReference>System.Drawing</p1:AssemblyReference>
         <p1:AssemblyReference>System.Web.Entity</p1:AssemblyReference>
         <p1:AssemblyReference>System.Web.ApplicationServices</p1:AssemblyReference>
         <p1:AssemblyReference>System</p1:AssemblyReference>
         <p1:AssemblyReference>System.Activities</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Core</p1:AssemblyReference>
         <p1:AssemblyReference>System.Data</p1:AssemblyReference>
         <p1:AssemblyReference>System.Data.Entity</p1:AssemblyReference>
         <p1:AssemblyReference>System.Runtime.Serialization</p1:AssemblyReference>
@@ -50,17 +50,14 @@
         <p1:AssemblyReference>System.ServiceModel.Activities</p1:AssemblyReference>
         <p1:AssemblyReference>System.ServiceModel.Channels</p1:AssemblyReference>
         <p1:AssemblyReference>System.Web</p1:AssemblyReference>
-        <p1:AssemblyReference>System.Web.Extensions</p1:AssemblyReference>
         <p1:AssemblyReference>System.Xaml</p1:AssemblyReference>
         <p1:AssemblyReference>System.Xml</p1:AssemblyReference>
         <p1:AssemblyReference>System.Xml.Linq</p1:AssemblyReference>
         <p1:AssemblyReference>WindowsBase</p1:AssemblyReference>
-        <p1:AssemblyReference>BasicActivities</p1:AssemblyReference>
         <p1:AssemblyReference>Fonlow.WorkflowDemo.Contracts</p1:AssemblyReference>
         <p1:AssemblyReference>SillyHelpers</p1:AssemblyReference>
-        <p1:AssemblyReference>System.Core</p1:AssemblyReference>
         <p1:AssemblyReference>mscorlib</p1:AssemblyReference>
-        <p1:AssemblyReference>BasicWFService</p1:AssemblyReference>
+        <p1:AssemblyReference>WFServiceContractFirst</p1:AssemblyReference>
       </sco:Collection>
     </p1:TextExpression.References>
     <p1:Sequence.Variables>
@@ -90,9 +87,15 @@
           </RequestReplyCorrelationInitializer>
         </Receive.CorrelationInitializers>
         <ReceiveParametersContent>
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side1" />
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side2" />
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side3" />
+          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side1">
+            <mca:CSharpReference x:TypeArguments="x:Int32">s1</mca:CSharpReference>
+          </p1:OutArgument>
+          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side2">
+            <mca:CSharpReference x:TypeArguments="x:Int32">s2</mca:CSharpReference>
+          </p1:OutArgument>
+          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="side3">
+            <mca:CSharpReference x:TypeArguments="x:Int32">s3</mca:CSharpReference>
+          </p1:OutArgument>
         </ReceiveParametersContent>
       </Receive>
       <p1:InvokeMethod sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="GetTriangleType" TargetType="fu:TriangleHelper">
@@ -119,7 +122,7 @@
         </SendParametersContent>
       </SendReply>
     </p1:Sequence>
-    <sads:DebugSymbol.Symbol>d0VDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dGU2VydmljZVxMb25nQ2FsY3VsYXRpb24ueGFtbHgLDwN7EQEBRgV5EwECTgdhEQEvYgdxGQEOcgd4EwEDUxFXJAEwbAtsSgEnbwtvSgEfZQ1lXAEXaQtpSgEPdQ11VAEE</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d01DOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XExvbmdDYWxjdWxhdGlvbi54YW1seA4PA34RAQFDBXwTAQJLB2QRAS9lB3QZAQ51B3sTAQNeDV5UAUFhDWFUATlbDVtUATFQEVQkATBvC29KASdyC3JKAR9oDWhcARdsC2xKAQ94DXhUAQQ=</sads:DebugSymbol.Symbol>
   </p1:Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
