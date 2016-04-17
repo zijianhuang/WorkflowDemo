@@ -1,20 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C94ACF69-4BFC-485B-A24E-FA9EE7497C37}</ProjectGuid>
+    <ProjectGuid>{A67A81B8-DF8C-4723-A8C1-FC106EC45DF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BasicTests</RootNamespace>
-    <AssemblyName>BasicTests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>WFServiceContractFirstIntegration</RootNamespace>
+    <AssemblyName>WFServiceContractFirstIntegration</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,18 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Essential.Diagnostics">
-      <HintPath>..\3rdParty\EssentialDiagnostics\Essential.Diagnostics.dll</HintPath>
+    <Reference Include="Fonlow.Testing, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FonlowxUnit.1.0.2.0\lib\net45\Fonlow.Testing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Activities" />
-    <Reference Include="System.Activities.DurableInstancing" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.DurableInstancing" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activities" />
-    <Reference Include="System.Xaml" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,62 +66,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Basic.cs" />
-    <Compile Include="DynamicActivityTests.cs" />
-    <Compile Include="InvokeDelegateTests.cs" />
-    <Compile Include="InvokeMethodTests.cs" />
-    <Compile Include="PersistenceTests.cs" />
+    <Compile Include="IisExpressCollection.cs" />
+    <Compile Include="WFServiceContractFirstIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NonServiceWFTests.cs" />
-    <Compile Include="WCFWithWorkflowTests.cs" />
-    <Compile Include="WorkflowApplicationTests.cs" />
-    <Compile Include="WorkflowServiceHostPersistenceTests.cs" />
-    <Compile Include="WorkflowServiceHostTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BasicActivities\BasicActivities.csproj">
-      <Project>{bcc3bed6-f4cf-45c8-81bf-0166d0698535}</Project>
-      <Name>BasicActivities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BasicWorkflows\BasicWorkflows.csproj">
-      <Project>{da3060cb-f4af-48d8-9b29-e43e3f8f4f1f}</Project>
-      <Name>BasicWorkflows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Fonlow.WFWCFLib\Fonlow.WFWCFLib.csproj">
-      <Project>{d09692a8-cd01-46ac-9b4a-58a4b6c13dc2}</Project>
-      <Name>Fonlow.WFWCFLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Fonlow.Workflow.Persistence\Fonlow.Workflow.Persistence.csproj">
-      <Project>{116fab86-5681-4b2e-ba3c-d242c5800aab}</Project>
-      <Name>Fonlow.Workflow.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SillyHelpers\SillyHelpers.csproj">
-      <Project>{83bff0bd-049f-445f-afc8-7b2e3c4c3dfb}</Project>
-      <Name>SillyHelpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WCFWithWF\WCFWithWF.csproj">
-      <Project>{dccc022f-a72f-463d-824a-3c92404a5ee6}</Project>
-      <Name>WCFWithWF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WFServiceContractFirst\WFServiceContractFirst.csproj">
-      <Project>{aad5c855-42ef-4972-b28f-e37c71a3e762}</Project>
-      <Name>WFServiceContractFirst</Name>
+    <ProjectReference Include="..\Fonlow.WorkflowDemo.Contracts\Fonlow.WorkflowDemo.Contracts.csproj">
+      <Project>{3cff1b53-8cf9-4de9-b388-4605b30f646e}</Project>
+      <Name>Fonlow.WorkflowDemo.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

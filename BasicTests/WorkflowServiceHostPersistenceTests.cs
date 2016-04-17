@@ -33,7 +33,7 @@ namespace BasicTests
                 // Add service endpoint.
                 host.AddServiceEndpoint("ICountingWorkflow", new NetTcpBinding(), "");
 
-                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior("Server =localhost; Initial Catalog = WF; Integrated Security = SSPI")
+                SqlWorkflowInstanceStoreBehavior instanceStoreBehavior = new SqlWorkflowInstanceStoreBehavior(connectionString)
                 {
                     HostLockRenewalPeriod = new TimeSpan(0, 0, 5),
                     RunnableInstancesDetectionPeriod = new TimeSpan(0, 0, 2),

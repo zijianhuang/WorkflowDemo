@@ -1,4 +1,4 @@
-﻿<WorkflowService mc:Ignorable="sap sap2010 sads" p1:TextExpression.Namespaces="{x:Reference __ReferenceID4}" p1:TextExpression.References="{x:Reference __ReferenceID5}" ConfigurationName="BookService" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="WorkflowService_1" Name="BookService"
+﻿<WorkflowService mc:Ignorable="sap sap2010 sads" p1:TextExpression.Namespaces="{x:Reference __ReferenceID6}" p1:TextExpression.References="{x:Reference __ReferenceID7}" ConfigurationName="BookService" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="WorkflowService_1" Name="BookService"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel"
  xmlns:fwc="clr-namespace:Fonlow.WorkflowDemo.Contracts;assembly=Fonlow.WorkflowDemo.Contracts"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,7 +15,7 @@
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <p1:Sequence DisplayName="Book Service" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <p1:TextExpression.Namespaces>
-      <sco:Collection x:TypeArguments="x:String" x:Name="__ReferenceID4">
+      <sco:Collection x:TypeArguments="x:String" x:Name="__ReferenceID6">
         <x:String>System</x:String>
         <x:String>System.Collections.Generic</x:String>
         <x:String>System.Data</x:String>
@@ -24,7 +24,7 @@
       </sco:Collection>
     </p1:TextExpression.Namespaces>
     <p1:TextExpression.References>
-      <sco:Collection x:TypeArguments="p1:AssemblyReference" x:Name="__ReferenceID5">
+      <sco:Collection x:TypeArguments="p1:AssemblyReference" x:Name="__ReferenceID7">
         <p1:AssemblyReference>Microsoft.AI.Agent.Intercept</p1:AssemblyReference>
         <p1:AssemblyReference>Microsoft.AI.DependencyCollector</p1:AssemblyReference>
         <p1:AssemblyReference>Microsoft.AI.PerfCounterCollector</p1:AssemblyReference>
@@ -56,6 +56,7 @@
         <p1:AssemblyReference>WindowsBase</p1:AssemblyReference>
         <p1:AssemblyReference>Fonlow.WorkflowDemo.Contracts</p1:AssemblyReference>
         <p1:AssemblyReference>SillyHelpers</p1:AssemblyReference>
+        <p1:AssemblyReference>Essential.Diagnostics</p1:AssemblyReference>
         <p1:AssemblyReference>mscorlib</p1:AssemblyReference>
         <p1:AssemblyReference>WFServiceContractFirst</p1:AssemblyReference>
       </sco:Collection>
@@ -159,7 +160,47 @@
         </SendParametersContent>
       </SendReply>
     </p1:Sequence>
-    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XEJvb2tTZXJ2aWNlLnhhbWx4EBADowERAQFDBWwTARdtBXYUARB3BaEBEwECRwdoEQEbaQdrEwEYdAl0YAEUcAtwcAEReweZAREBCpoBB6ABEwEDUg1SWgEhZQ1lWwEdWRFdJAEchgENhgFaAQyNARGRASQBC50BDZ0BUwEE</sads:DebugSymbol.Symbol>
+    <p1:Sequence DisplayName="Pay_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_4">
+      <p1:Sequence.Variables>
+        <x:Reference>__ReferenceID5</x:Reference>
+      </p1:Sequence.Variables>
+      <Receive x:Name="__ReferenceID4" Action="http://fonlow.com/FonlowDemo/2016/03/IBookService/Pay" DisplayName="Pay_Receive" sap2010:WorkflowViewState.IdRef="Receive_3" OperationName="Pay" ProtectionLevel="None" ServiceContractName="p:IBookService">
+        <Receive.CorrelatesOn>
+          <XPathMessageQuery x:Key="key1">
+            <XPathMessageQuery.Namespaces>
+              <ssx:XPathMessageContextMarkup>
+                <x:String x:Key="xgSc">http://fonlow.com/FonlowDemo/2016/03</x:String>
+              </ssx:XPathMessageContextMarkup>
+            </XPathMessageQuery.Namespaces>sm:body()/xgSc:Pay/xgSc:customerId</XPathMessageQuery>
+        </Receive.CorrelatesOn>
+        <Receive.CorrelatesWith>
+          <p1:InArgument x:TypeArguments="CorrelationHandle">
+            <mca:CSharpValue x:TypeArguments="CorrelationHandle">handle</mca:CSharpValue>
+          </p1:InArgument>
+        </Receive.CorrelatesWith>
+        <Receive.CorrelationInitializers>
+          <RequestReplyCorrelationInitializer>
+            <RequestReplyCorrelationInitializer.CorrelationHandle>
+              <p1:InArgument x:TypeArguments="CorrelationHandle">
+                <p1:VariableValue x:TypeArguments="CorrelationHandle">
+                  <p1:VariableValue.Variable>
+                    <p1:Variable x:TypeArguments="CorrelationHandle" x:Name="__ReferenceID5" Name="__handle" />
+                  </p1:VariableValue.Variable>
+                </p1:VariableValue>
+              </p1:InArgument>
+            </RequestReplyCorrelationInitializer.CorrelationHandle>
+          </RequestReplyCorrelationInitializer>
+        </Receive.CorrelationInitializers>
+        <ReceiveParametersContent>
+          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="customerId" />
+          <p1:OutArgument x:TypeArguments="x:String" x:Key="paymentDetail" />
+        </ReceiveParametersContent>
+      </Receive>
+      <SendReply Request="{x:Reference __ReferenceID4}" Action="http://fonlow.com/FonlowDemo/2016/03/IBookService/PayResponse" DisplayName="Pay_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_3">
+        <SendParametersContent />
+      </SendReply>
+    </p1:Sequence>
+    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XEJvb2tTZXJ2aWNlLnhhbWx4FRADzAERAQFEBW0TASFuBXcUARp4BaIBEwEMowEFygETAQJIB2kRASVqB2wTASJ1CXVgAR5xC3FwARt8B5oBEQEUmwEHoQETAQ2nAQfGAREBBscBB8kBEwEDUw1TWgErZg1mWwEnWhFeJAEmhwENhwFaARaOARGSASQBFZ4BDZ4BUwEOsgENsgFaAQi5ARG9ASQBBw==</sads:DebugSymbol.Symbol>
   </p1:Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -184,14 +225,24 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="299,954">
+      <sap2010:ViewStateData Id="Receive_3" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="SendReply_3" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="277,344">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Type Type="fwc:IBookService" x:Key="contractType" />
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="299,1338">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WorkflowService_1" sap:VirtualizedContainerService.HintSize="329,1024" />
+      <sap2010:ViewStateData Id="WorkflowService_1" sap:VirtualizedContainerService.HintSize="329,1408" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </WorkflowService>

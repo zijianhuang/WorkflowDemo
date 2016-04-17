@@ -31,6 +31,9 @@ namespace Fonlow.WorkflowDemo.Contracts
         [OperationContract]
         [return: System.ServiceModel.MessageParameterAttribute(Name = "CheckoutResult")]
         string Checkout(int customerId);
+
+        [OperationContract]
+        void Pay(int customerId, string paymentDetail);
     }
 
     [ServiceContract(Namespace = Constants.ContractNamespace)]
