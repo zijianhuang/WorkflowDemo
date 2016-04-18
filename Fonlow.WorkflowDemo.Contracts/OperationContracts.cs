@@ -26,14 +26,14 @@ namespace Fonlow.WorkflowDemo.Contracts
     public interface IBookService
     {
         [OperationContract]
-        void Buy(int customerId, string bookName);
+        void Buy(Guid customerId, string bookName);
 
         [OperationContract]
         [return: System.ServiceModel.MessageParameterAttribute(Name = "CheckoutResult")]
-        string Checkout(int customerId);
+        string Checkout(Guid customerId);
 
         [OperationContract]
-        void Pay(int customerId, string paymentDetail);
+        void Pay(Guid customerId, string paymentDetail);
     }
 
     [ServiceContract(Namespace = Constants.ContractNamespace)]

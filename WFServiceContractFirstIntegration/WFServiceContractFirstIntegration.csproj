@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fonlow.Testing, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FonlowxUnit.1.0.2.0\lib\net45\Fonlow.Testing.dll</HintPath>
+    <Reference Include="Fonlow.Testing.Service, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cf59ce9d94b04b8a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fonlow.Testing.Service.2.1.0.0\lib\net45\Fonlow.Testing.Service.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="IisExpressCollection.cs" />
     <Compile Include="WFServiceContractFirstIntegrationTests.cs" />
+    <Compile Include="WFServicePersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

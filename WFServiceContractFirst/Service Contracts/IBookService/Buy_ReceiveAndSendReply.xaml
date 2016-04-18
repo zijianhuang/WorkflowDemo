@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ActivityTemplateFactory x:Class="IBookService.Buy_ReceiveAndSendReply" x:TypeArguments="p1:Sequence" xmlns="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation/toolbox" xmlns:fwc="clr-namespace:Fonlow.WorkflowDemo.Contracts;assembly=Fonlow.WorkflowDemo.Contracts" xmlns:p="http://fonlow.com/FonlowDemo/2016/03" xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:p2="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ActivityTemplateFactory x:Class="IBookService.Buy_ReceiveAndSendReply" x:TypeArguments="p1:Sequence" xmlns="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation/toolbox" xmlns:fwc="clr-namespace:Fonlow.WorkflowDemo.Contracts;assembly=Fonlow.WorkflowDemo.Contracts" xmlns:p="http://fonlow.com/FonlowDemo/2016/03" xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:p2="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <p1:Sequence DisplayName="Buy_ReceiveAndSendReply">
     <p1:Sequence.Variables>
       <x:Reference>__ReferenceID1</x:Reference>
@@ -24,7 +24,7 @@
         </p2:RequestReplyCorrelationInitializer>
       </p2:Receive.CorrelationInitializers>
       <p2:ReceiveParametersContent>
-        <p1:OutArgument x:TypeArguments="x:Int32" x:Key="customerId" />
+        <p1:OutArgument x:TypeArguments="s:Guid" x:Key="customerId" />
         <p1:OutArgument x:TypeArguments="x:String" x:Key="bookName" />
       </p2:ReceiveParametersContent>
     </p2:Receive>

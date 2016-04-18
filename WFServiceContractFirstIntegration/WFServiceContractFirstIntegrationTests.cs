@@ -19,38 +19,35 @@ namespace WFServiceContractFirstIntegration
         [Fact]
         public void TestBuyBook()
         {
-            // Create service host.
-            // Create a client that sends a message to create an instance of the workflow.
             var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
             const string bookName = "Alice in Wonderland";
-            client.Buy(1234, bookName);
-            var checkOutBookName = client.Checkout(1234);
+            var customerId = Guid.NewGuid();
+            client.Buy(customerId, bookName);
+            var checkOutBookName = client.Checkout(customerId);
             Assert.Equal(bookName, checkOutBookName);
-            client.Pay(1234, "Visa card");
+            client.Pay(customerId, "Visa card");
         }
 
         [Fact]
-        public void TestBuyBookInWrongOrder()
+        public void TestBuyBookInWrongOrderThrows()
         {
-            // Create service host.
-            // Create a client that sends a message to create an instance of the workflow.
             var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
             const string bookName = "Alice in Wonderland";
-            client.Buy(2222, bookName);
+            var customerId = Guid.NewGuid();
+            client.Buy(customerId, bookName);
             var ex = Assert.Throws<FaultException>(
-                () => client.Pay(2222, "Visa card"));
+                () => client.Pay(customerId, "Visa card"));
             Assert.Contains("correct order", ex.ToString());
         }
 
         [Fact]
-        public void TestBuyBookButCheckOutFirst()
+        public void TestNonExistingSessionThrows()
         {
-            // Create service host.
-            // Create a client that sends a message to create an instance of the workflow.
             var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
+            var customerId = Guid.NewGuid();
             var ex = Assert.Throws<FaultException>(
-                () => { client.Checkout(2222); });
-            Assert.Contains("correct order", ex.ToString());
+                () => { client.Checkout(customerId); });
+            Assert.Contains("InstancePersistenceCommand", ex.ToString());
         }
 
 

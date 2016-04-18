@@ -5,6 +5,7 @@
  xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
  xmlns:p="http://fonlow.com/FonlowDemo/2016/03"
  xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:s="clr-namespace:System;assembly=mscorlib"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
@@ -97,7 +98,7 @@
           </RequestReplyCorrelationInitializer>
         </Receive.CorrelationInitializers>
         <ReceiveParametersContent>
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="customerId" />
+          <p1:OutArgument x:TypeArguments="s:Guid" x:Key="customerId" />
           <p1:OutArgument x:TypeArguments="x:String" x:Key="bookName">
             <mca:CSharpReference x:TypeArguments="x:String">bookname</mca:CSharpReference>
           </p1:OutArgument>
@@ -117,6 +118,7 @@
         <mca:CSharpValue x:TypeArguments="x:String">"book to buy " + bookname</mca:CSharpValue>
       </p1:InArgument>
     </p1:WriteLine>
+    <p1:Persist sap2010:WorkflowViewState.IdRef="Persist_2" />
     <p1:Sequence DisplayName="Checkout_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_3">
       <p1:Sequence.Variables>
         <x:Reference>__ReferenceID3</x:Reference>
@@ -149,7 +151,7 @@
           </RequestReplyCorrelationInitializer>
         </Receive.CorrelationInitializers>
         <ReceiveParametersContent>
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="customerId" />
+          <p1:OutArgument x:TypeArguments="s:Guid" x:Key="customerId" />
         </ReceiveParametersContent>
       </Receive>
       <SendReply Request="{x:Reference __ReferenceID2}" Action="http://fonlow.com/FonlowDemo/2016/03/IBookService/CheckoutResponse" DisplayName="Checkout_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_2">
@@ -160,6 +162,7 @@
         </SendParametersContent>
       </SendReply>
     </p1:Sequence>
+    <p1:Persist sap2010:WorkflowViewState.IdRef="Persist_3" />
     <p1:Sequence DisplayName="Pay_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_4">
       <p1:Sequence.Variables>
         <x:Reference>__ReferenceID5</x:Reference>
@@ -192,7 +195,7 @@
           </RequestReplyCorrelationInitializer>
         </Receive.CorrelationInitializers>
         <ReceiveParametersContent>
-          <p1:OutArgument x:TypeArguments="x:Int32" x:Key="customerId" />
+          <p1:OutArgument x:TypeArguments="s:Guid" x:Key="customerId" />
           <p1:OutArgument x:TypeArguments="x:String" x:Key="paymentDetail" />
         </ReceiveParametersContent>
       </Receive>
@@ -200,7 +203,7 @@
         <SendParametersContent />
       </SendReply>
     </p1:Sequence>
-    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XEJvb2tTZXJ2aWNlLnhhbWx4FRADzAERAQFEBW0TASFuBXcUARp4BaIBEwEMowEFygETAQJIB2kRASVqB2wTASJ1CXVgAR5xC3FwARt8B5oBEQEUmwEHoQETAQ2nAQfGAREBBscBB8kBEwEDUw1TWgErZg1mWwEnWhFeJAEmhwENhwFaARaOARGSASQBFZ4BDZ4BUwEOsgENsgFaAQi5ARG9ASQBBw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0lDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XEJvb2tTZXJ2aWNlLnhhbWx4FxEDzwERAQFFBW4TASNvBXgUARx5BXk/ARt6BaQBEwENpQEFpQE/AQymAQXNARMBAkkHahEBJ2sHbRMBJHYJdmABIHILcnABHX4HnAERARWdAQejARMBDqoBB8kBEQEGygEHzAETAQNUDVRaAS1nDWdbASlbEV8kASiJAQ2JAVoBF5ABEZQBJAEWoAENoAFTAQ+1AQ21AVoBCLwBEcABJAEH</sads:DebugSymbol.Symbol>
   </p1:Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -215,6 +218,7 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="277,62" />
+      <sap2010:ViewStateData Id="Persist_2" sap:VirtualizedContainerService.HintSize="277,22" />
       <sap2010:ViewStateData Id="Receive_2" sap:VirtualizedContainerService.HintSize="255,90" />
       <sap2010:ViewStateData Id="SendReply_2" sap:VirtualizedContainerService.HintSize="255,90" />
       <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="277,344">
@@ -225,6 +229,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Persist_3" sap:VirtualizedContainerService.HintSize="277,22" />
       <sap2010:ViewStateData Id="Receive_3" sap:VirtualizedContainerService.HintSize="255,90" />
       <sap2010:ViewStateData Id="SendReply_3" sap:VirtualizedContainerService.HintSize="255,90" />
       <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="277,344">
@@ -235,14 +240,14 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="299,1338">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="299,1462">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WorkflowService_1" sap:VirtualizedContainerService.HintSize="329,1408" />
+      <sap2010:ViewStateData Id="WorkflowService_1" sap:VirtualizedContainerService.HintSize="329,1532" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </WorkflowService>
