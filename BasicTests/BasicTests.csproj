@@ -73,6 +73,7 @@
     <Compile Include="Basic.cs" />
     <Compile Include="DynamicActivityTests.cs" />
     <Compile Include="InvokeDelegateTests.cs" />
+    <Compile Include="AsyncCodeActivityTests.cs" />
     <Compile Include="InvokeMethodTests.cs" />
     <Compile Include="PersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

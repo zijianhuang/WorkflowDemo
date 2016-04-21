@@ -54,7 +54,15 @@ namespace BasicTests
                 ResumeBookmarkEndpoint endpoint = new ResumeBookmarkEndpoint(binding, endpointAddress);
                 host.AddServiceEndpoint(endpoint);
 
-                host.Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+                var debugBehavior = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+                if (debugBehavior == null)
+                {
+                    host.Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+                }
+                else
+                {
+                    debugBehavior.IncludeExceptionDetailInFaults = true;
+                }
             }
 
             return host;
