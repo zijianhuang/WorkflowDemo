@@ -65,7 +65,7 @@ namespace Fonlow.Activities
         {
             get
             {
-                return ActivityPersistenceHelper.LoadActivity(WFDefinitionIdentityStore.Instance.InstanceDefinitions[definitionIdentity]);
+                return ActivityPersistenceHelper.LoadActivity(InstanceDefinitions[definitionIdentity]);
             }
         }
     }
