@@ -44,12 +44,6 @@ namespace Fonlow.Activities
             return InstanceDefinitions.TryAdd(definitionIdentity, a);
         }
 
-        public bool Remove(WorkflowIdentity definitionIdentity)
-        {
-            Activity activity;
-            return InstanceDefinitions.TryRemove(definitionIdentity, out activity);
-        }
-
         public Activity this[WorkflowIdentity definitionIdentity]
         {
             get

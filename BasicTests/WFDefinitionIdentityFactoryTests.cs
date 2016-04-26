@@ -201,7 +201,7 @@ namespace BasicTests
 
             Thread.Sleep(5000); // from 1 seconds to 9 seconds, the total time of the test case is the same.
 
-            var outputs = LoadAndCompleteLongRunning(id, definitionIdentity);
+            var outputs = LoadAndCompleteLongRunning(id, definitionIdentity); //at this point, the workflow definition is not yet added into the dictionary of WFDefinitionIdentityFactory.
 
             Assert.False((bool)outputs["Result"]);
 
