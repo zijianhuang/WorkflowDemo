@@ -1,0 +1,279 @@
+﻿<WorkflowService mc:Ignorable="sap sap2010 sads" p1:TextExpression.Namespaces="{x:Reference __ReferenceID6}" p1:TextExpression.References="{x:Reference __ReferenceID7}" ConfigurationName="WaitForSignalService" DefinitionIdentity="WaitAndSee; Version=2.0.0.0" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="WorkflowService_1" Name="WaitForSignalService"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel"
+ xmlns:fwc="clr-namespace:Fonlow.WorkflowDemo.Contracts;assembly=Fonlow.WorkflowDemo.Contracts"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
+ xmlns:p="http://fonlow.com/FonlowDemo/2016/03"
+ xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:s="clr-namespace:System;assembly=mscorlib"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:si="clr-namespace:System.IO;assembly=mscorlib"
+ xmlns:ssx="clr-namespace:System.ServiceModel.XamlIntegration;assembly=System.ServiceModel"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <p1:Sequence DisplayName="Sequential Service" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <p1:TextExpression.Namespaces>
+      <sco:Collection x:TypeArguments="x:String" x:Name="__ReferenceID6">
+        <x:String>System</x:String>
+        <x:String>System.Collections.Generic</x:String>
+        <x:String>System.Data</x:String>
+        <x:String>System.Linq</x:String>
+        <x:String>System.Text</x:String>
+      </sco:Collection>
+    </p1:TextExpression.Namespaces>
+    <p1:TextExpression.References>
+      <sco:Collection x:TypeArguments="p1:AssemblyReference" x:Name="__ReferenceID7">
+        <p1:AssemblyReference>Essential.Diagnostics</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.Agent.Intercept</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.DependencyCollector</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.PerfCounterCollector</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.ServerTelemetryChannel</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.Web</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.AI.WindowsServer</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.ApplicationInsights</p1:AssemblyReference>
+        <p1:AssemblyReference>Microsoft.CSharp</p1:AssemblyReference>
+        <p1:AssemblyReference>PresentationCore</p1:AssemblyReference>
+        <p1:AssemblyReference>PresentationFramework</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Activities.Presentation</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Web.DynamicData</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Drawing</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Web.Entity</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Web.ApplicationServices</p1:AssemblyReference>
+        <p1:AssemblyReference>System</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Activities</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Core</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Data</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Data.Entity</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Runtime.Serialization</p1:AssemblyReference>
+        <p1:AssemblyReference>System.ServiceModel</p1:AssemblyReference>
+        <p1:AssemblyReference>System.ServiceModel.Activities</p1:AssemblyReference>
+        <p1:AssemblyReference>System.ServiceModel.Channels</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Web</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Xaml</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Xml</p1:AssemblyReference>
+        <p1:AssemblyReference>System.Xml.Linq</p1:AssemblyReference>
+        <p1:AssemblyReference>WindowsBase</p1:AssemblyReference>
+        <p1:AssemblyReference>Fonlow.WorkflowDemo.Contracts</p1:AssemblyReference>
+        <p1:AssemblyReference>SillyHelpers</p1:AssemblyReference>
+        <p1:AssemblyReference>BasicWorkflows</p1:AssemblyReference>
+        <p1:AssemblyReference>mscorlib</p1:AssemblyReference>
+        <p1:AssemblyReference>WFServiceContractFirst</p1:AssemblyReference>
+      </sco:Collection>
+    </p1:TextExpression.References>
+    <p1:Sequence.Variables>
+      <p1:Variable x:TypeArguments="CorrelationHandle" Name="handle" />
+      <p1:Variable x:TypeArguments="x:Int32" Name="data" />
+      <p1:Variable x:TypeArguments="x:String" Name="bookmarkName" />
+      <p1:Variable x:TypeArguments="x:TimeSpan" Name="duration" />
+    </p1:Sequence.Variables>
+    <p1:Sequence DisplayName="Create_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <p1:Sequence.Variables>
+        <x:Reference>__ReferenceID1</x:Reference>
+      </p1:Sequence.Variables>
+      <Receive x:Name="__ReferenceID0" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/Create" CanCreateInstance="True" DisplayName="Create_Receive" sap2010:WorkflowViewState.IdRef="Receive_1" OperationName="Create" ProtectionLevel="None" ServiceContractName="p:IWakeup">
+        <Receive.CorrelatesOn>
+          <XPathMessageQuery x:Key="key1">
+            <XPathMessageQuery.Namespaces>
+              <ssx:XPathMessageContextMarkup>
+                <x:String x:Key="xgSc">http://fonlow.com/FonlowDemo/2016/03</x:String>
+              </ssx:XPathMessageContextMarkup>
+            </XPathMessageQuery.Namespaces>sm:body()/xgSc:Create/xgSc:bookmarkName</XPathMessageQuery>
+        </Receive.CorrelatesOn>
+        <Receive.CorrelatesWith>
+          <p1:InArgument x:TypeArguments="CorrelationHandle">
+            <mca:CSharpValue x:TypeArguments="CorrelationHandle">handle</mca:CSharpValue>
+          </p1:InArgument>
+        </Receive.CorrelatesWith>
+        <Receive.CorrelationInitializers>
+          <RequestReplyCorrelationInitializer>
+            <RequestReplyCorrelationInitializer.CorrelationHandle>
+              <p1:InArgument x:TypeArguments="CorrelationHandle">
+                <p1:VariableValue x:TypeArguments="CorrelationHandle">
+                  <p1:VariableValue.Variable>
+                    <p1:Variable x:TypeArguments="CorrelationHandle" x:Name="__ReferenceID1" Name="__handle" />
+                  </p1:VariableValue.Variable>
+                </p1:VariableValue>
+              </p1:InArgument>
+            </RequestReplyCorrelationInitializer.CorrelationHandle>
+          </RequestReplyCorrelationInitializer>
+        </Receive.CorrelationInitializers>
+        <ReceiveParametersContent>
+          <p1:OutArgument x:TypeArguments="x:String" x:Key="bookmarkName">
+            <mca:CSharpReference x:TypeArguments="x:String">bookmarkName</mca:CSharpReference>
+          </p1:OutArgument>
+          <p1:OutArgument x:TypeArguments="x:TimeSpan" x:Key="duration">
+            <mca:CSharpReference x:TypeArguments="x:TimeSpan">duration</mca:CSharpReference>
+          </p1:OutArgument>
+        </ReceiveParametersContent>
+      </Receive>
+      <SendReply Request="{x:Reference __ReferenceID0}" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/CreateResponse" DisplayName="Create_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_1">
+        <SendParametersContent>
+          <p1:InArgument x:TypeArguments="s:Guid" x:Key="CreateResult">
+            <mca:CSharpValue x:TypeArguments="s:Guid">Guid.NewGuid()</mca:CSharpValue>
+          </p1:InArgument>
+        </SendParametersContent>
+      </SendReply>
+    </p1:Sequence>
+    <p1:WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Workflow started and waiting for bookmark" />
+    <p1:Pick sap2010:WorkflowViewState.IdRef="Pick_1">
+      <p1:PickBranch DisplayName="Branch1" sap2010:WorkflowViewState.IdRef="PickBranch_1">
+        <p1:PickBranch.Trigger>
+          <p1:Sequence DisplayName="Wakeup_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <p1:Sequence.Variables>
+              <x:Reference>__ReferenceID3</x:Reference>
+            </p1:Sequence.Variables>
+            <Receive x:Name="__ReferenceID2" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/Wakeup" DisplayName="Wakeup_Receive" sap2010:WorkflowViewState.IdRef="Receive_2" OperationName="Wakeup" ProtectionLevel="None" ServiceContractName="p:IWakeup">
+              <Receive.CorrelatesOn>
+                <XPathMessageQuery x:Key="key1">
+                  <XPathMessageQuery.Namespaces>
+                    <ssx:XPathMessageContextMarkup>
+                      <x:String x:Key="xgSc">http://fonlow.com/FonlowDemo/2016/03</x:String>
+                    </ssx:XPathMessageContextMarkup>
+                  </XPathMessageQuery.Namespaces>sm:body()/xgSc:Wakeup/xgSc:bookmarkName</XPathMessageQuery>
+              </Receive.CorrelatesOn>
+              <Receive.CorrelatesWith>
+                <p1:InArgument x:TypeArguments="CorrelationHandle">
+                  <mca:CSharpValue x:TypeArguments="CorrelationHandle">handle</mca:CSharpValue>
+                </p1:InArgument>
+              </Receive.CorrelatesWith>
+              <Receive.CorrelationInitializers>
+                <RequestReplyCorrelationInitializer>
+                  <RequestReplyCorrelationInitializer.CorrelationHandle>
+                    <p1:InArgument x:TypeArguments="CorrelationHandle">
+                      <p1:VariableValue x:TypeArguments="CorrelationHandle">
+                        <p1:VariableValue.Variable>
+                          <p1:Variable x:TypeArguments="CorrelationHandle" x:Name="__ReferenceID3" Name="__handle" />
+                        </p1:VariableValue.Variable>
+                      </p1:VariableValue>
+                    </p1:InArgument>
+                  </RequestReplyCorrelationInitializer.CorrelationHandle>
+                </RequestReplyCorrelationInitializer>
+              </Receive.CorrelationInitializers>
+              <ReceiveParametersContent>
+                <p1:OutArgument x:TypeArguments="x:String" x:Key="bookmarkName" />
+              </ReceiveParametersContent>
+            </Receive>
+            <SendReply Request="{x:Reference __ReferenceID2}" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/WakeupResponse" DisplayName="Wakeup_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_2">
+              <SendParametersContent>
+                <p1:InArgument x:TypeArguments="x:Boolean" x:Key="WakerupResult">True</p1:InArgument>
+              </SendParametersContent>
+            </SendReply>
+          </p1:Sequence>
+        </p1:PickBranch.Trigger>
+        <p1:WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="Wake up">
+          <p1:WriteLine.TextWriter>
+            <p1:InArgument x:TypeArguments="si:TextWriter">
+              <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+            </p1:InArgument>
+          </p1:WriteLine.TextWriter>
+        </p1:WriteLine>
+      </p1:PickBranch>
+      <p1:PickBranch DisplayName="Branch2" sap2010:WorkflowViewState.IdRef="PickBranch_2">
+        <p1:PickBranch.Trigger>
+          <p1:Delay sap2010:WorkflowViewState.IdRef="Delay_1">
+            <p1:InArgument x:TypeArguments="x:TimeSpan">
+              <mca:CSharpValue x:TypeArguments="x:TimeSpan">duration</mca:CSharpValue>
+            </p1:InArgument>
+          </p1:Delay>
+        </p1:PickBranch.Trigger>
+        <p1:Sequence sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <p1:WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Time up">
+            <p1:WriteLine.TextWriter>
+              <p1:InArgument x:TypeArguments="si:TextWriter">
+                <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+              </p1:InArgument>
+            </p1:WriteLine.TextWriter>
+          </p1:WriteLine>
+          <p1:Sequence DisplayName="Wakeup_ReceiveAndSendReply" sap2010:WorkflowViewState.IdRef="Sequence_4">
+            <p1:Sequence.Variables>
+              <x:Reference>__ReferenceID5</x:Reference>
+            </p1:Sequence.Variables>
+            <Receive x:Name="__ReferenceID4" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/Wakeup" DisplayName="Wakeup_Receive" sap2010:WorkflowViewState.IdRef="Receive_3" OperationName="Wakeup" ProtectionLevel="None" ServiceContractName="p:IWakeup">
+              <Receive.CorrelationInitializers>
+                <RequestReplyCorrelationInitializer>
+                  <RequestReplyCorrelationInitializer.CorrelationHandle>
+                    <p1:InArgument x:TypeArguments="CorrelationHandle">
+                      <p1:VariableValue x:TypeArguments="CorrelationHandle">
+                        <p1:VariableValue.Variable>
+                          <p1:Variable x:TypeArguments="CorrelationHandle" x:Name="__ReferenceID5" Name="__handle" />
+                        </p1:VariableValue.Variable>
+                      </p1:VariableValue>
+                    </p1:InArgument>
+                  </RequestReplyCorrelationInitializer.CorrelationHandle>
+                </RequestReplyCorrelationInitializer>
+              </Receive.CorrelationInitializers>
+              <ReceiveParametersContent>
+                <p1:OutArgument x:TypeArguments="x:String" x:Key="bookmarkName" />
+              </ReceiveParametersContent>
+            </Receive>
+            <SendReply Request="{x:Reference __ReferenceID4}" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/WakeupResponse" DisplayName="Wakeup_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_3">
+              <SendParametersContent>
+                <p1:InArgument x:TypeArguments="x:Boolean" x:Key="WakerupResult">False</p1:InArgument>
+              </SendParametersContent>
+            </SendReply>
+          </p1:Sequence>
+        </p1:Sequence>
+      </p1:PickBranch>
+    </p1:Pick>
+    <sads:DebugSymbol.Symbol>d1JDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XFdhaXRGb3JTaWduYWxTZXJ2aWNlLnhhbWx4IhED3gERAQFIBXcTATB4BXh0AS55BdwBDwECTAdvEQE6cAd2EwExeEZ4cQEvegetARcBGa4BB9sBFwEDVw1XWgFIaQ1pXwFCXhFiJAFBbA1sXQE7cw1zVwEyfAukARkBIaYBCawBGAEasAELtAEWARO2AQnaARcBBIABDZ4BFwEmnwENowEZASKmAUqmAVMBIKkBD6kBdAEbsgEPsgFXARS3AQu9ARoBDL4BC9kBGQEFiwETiwFgASiSAReWASoBJ6EBUqEBVgEjtwFMtwFVARK6ARG6AXYBDcIBDdMBFwEK1AEN2AEZAQbHARfLASoBC9YBUtYBVwEH</sads:DebugSymbol.Symbol>
+  </p1:Sequence>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="Receive_1" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="SendReply_1" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="790,344">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Type Type="fwc:IWakeup" x:Key="contractType" />
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="790,62" />
+      <sap2010:ViewStateData Id="Receive_2" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="SendReply_2" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="277,344">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Type Type="fwc:IWakeup" x:Key="contractType" />
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="PickBranch_1" sap:VirtualizedContainerService.HintSize="307,828" />
+      <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="277,62" />
+      <sap2010:ViewStateData Id="Receive_3" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="SendReply_3" sap:VirtualizedContainerService.HintSize="255,90" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="277,344">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Type Type="fwc:IWakeup" x:Key="contractType" />
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="299,570">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="PickBranch_2" sap:VirtualizedContainerService.HintSize="329,828" />
+      <sap2010:ViewStateData Id="Pick_1" sap:VirtualizedContainerService.HintSize="790,874" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="812,1484">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WorkflowService_1" sap:VirtualizedContainerService.HintSize="842,1554" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</WorkflowService>

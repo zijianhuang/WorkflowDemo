@@ -15,11 +15,11 @@ namespace WFServiceContractFirstIntegration
     [Collection(TestConstants.IisExpressAndInit)]
     public class WFServiceContractFirstIntegrationTests
     {
-        const string hostBaseAddress = "http://localhost:2327/BookService.xamlx";
+        const string bookServiceBaseAddress = "http://localhost:2327/BookService.xamlx";
         [Fact]
         public void TestBuyBook()
         {
-            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
+            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(bookServiceBaseAddress));
             const string bookName = "Alice in Wonderland";
             var customerId = Guid.NewGuid();
             client.Buy(customerId, bookName);
@@ -31,7 +31,7 @@ namespace WFServiceContractFirstIntegration
         [Fact]
         public void TestBuyBookInWrongOrderThrows()
         {
-            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
+            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(bookServiceBaseAddress));
             const string bookName = "Alice in Wonderland";
             var customerId = Guid.NewGuid();
             client.Buy(customerId, bookName);
@@ -43,12 +43,39 @@ namespace WFServiceContractFirstIntegration
         [Fact]
         public void TestNonExistingSessionThrows()
         {
-            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(hostBaseAddress));
+            var client = ChannelFactory<IBookService>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(bookServiceBaseAddress));
             var customerId = Guid.NewGuid();
             var ex = Assert.Throws<FaultException>(
                 () => { client.Checkout(customerId); });
             Assert.Contains("InstancePersistenceCommand", ex.ToString());
         }
+
+
+        const string waitServiceBaseAddress = "http://localhost:2327/WaitForSignalService.xamlx";
+
+        [Fact]
+        public void TestWaitForSignal()
+        {
+            var client = ChannelFactory<IWakeup>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(waitServiceBaseAddress));
+            var bookmark = Guid.NewGuid().ToString();
+            var id = client.Create(bookmark, TimeSpan.FromMinutes(2));
+            Assert.NotEqual(Guid.Empty, id);
+            var r = client.Wakeup(bookmark);
+            Assert.True(r);
+        }
+
+        [Fact]
+        public void TestWaitForTimeup()
+        {
+            var client = ChannelFactory<IWakeup>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(waitServiceBaseAddress));
+            var bookmark = Guid.NewGuid().ToString();
+            var id = client.Create(bookmark, TimeSpan.FromMilliseconds(100));
+            Assert.NotEqual(Guid.Empty, id);
+            System.Threading.Thread.Sleep(200);
+            var r = client.Wakeup(bookmark);
+            Assert.False(r);
+        }
+
 
 
     }

@@ -114,6 +114,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BasicWorkflows\BasicWorkflows.csproj">
+      <Project>{DA3060CB-F4AF-48D8-9B29-E43E3F8F4F1F}</Project>
+      <Name>BasicWorkflows</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fonlow.WorkflowDemo.Contracts\Fonlow.WorkflowDemo.Contracts.csproj">
       <Project>{3cff1b53-8cf9-4de9-b388-4605b30f646e}</Project>
       <Name>Fonlow.WorkflowDemo.Contracts</Name>
@@ -168,6 +172,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </XamlAppDef>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Service Contracts\IWakeup\contractTypeName" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamlAppDef Include="Service Contracts\IWakeup\Create_ReceiveAndSendReply.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlAppDef>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlAppDef Include="Service Contracts\IWakeup\Wakeup_ReceiveAndSendReply.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlAppDef>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WaitForSignalService.xamlx">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Code\WaitForSignalService\WaitForSignalService_V1.xamlx">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
