@@ -22,7 +22,7 @@ namespace BasicTests
     public class WorkflowServiceHostPersistenceTests
     {
         const string connectionString = "Server =localhost; Initial Catalog = WF; Integrated Security = SSPI";
-        const string hostBaseAddress = "net.tcp://localhost/CountingService";
+        const string hostBaseAddress = "net.tcp://localhost/Persist/CountingService";
         [Fact]
         public void TestOpenHost()
         {
