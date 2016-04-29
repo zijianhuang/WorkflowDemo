@@ -62,6 +62,9 @@ namespace WFServiceContractFirstIntegration
             Assert.NotEqual(Guid.Empty, id);
             var r = client.Wakeup(bookmark);
             Assert.True(r);
+
+            Assert.Throws<FaultException>(() =>
+                 r = client.Wakeup(bookmark));  //Workflow instance is finsihed now, not more call will be valid.
         }
 
         [Fact]
@@ -75,6 +78,37 @@ namespace WFServiceContractFirstIntegration
             var r = client.Wakeup(bookmark);
             Assert.False(r);
         }
+
+        ///// <summary>
+        ///// Run this when there's only one version of the service
+        ///// </summary>
+        //[Fact]
+        //public void TestWaitForInfiniteLoop()
+        //{
+        //    var client = ChannelFactory<IWakeup>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(waitServiceBaseAddress));
+        //    var bookmark = "infiniteLoop";
+        //    //      client.Create(bookmark, TimeSpan.FromMinutes(2));  //Uncommen this statement in the first run of the test, then comment out this line in subsequent run.
+        //    var r = client.Wakeup(bookmark);
+        //    Assert.True(r);
+        //    r = client.Wakeup(bookmark);
+        //    Assert.True(r);
+        //}
+
+        ///// <summary>
+        ///// Run this when there are 2 versions of the service, and the new version will take bookmark "infiniteLoop3".
+        ///// </summary>
+        //[Fact]
+        //public void TestWaitForInfiniteLoopV3()
+        //{
+        //    var client = ChannelFactory<IWakeup>.CreateChannel(new BasicHttpBinding(), new EndpointAddress(waitServiceBaseAddress));
+        //    var bookmark = "infiniteLoop3"; 
+        //    client.Create(bookmark, TimeSpan.FromMinutes(2)); //Uncommen this statement in the first run of the test, then comment out this line in subsequent run.
+        //    var r = client.Wakeup(bookmark);
+        //    Assert.False(r);//The logic in new version is changed. Now it returns false.
+        //    r = client.Wakeup(bookmark);
+        //    Assert.False(r);
+        //}
+
 
 
 

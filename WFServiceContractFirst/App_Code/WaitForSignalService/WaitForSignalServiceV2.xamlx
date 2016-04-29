@@ -1,4 +1,4 @@
-﻿<WorkflowService mc:Ignorable="sap sap2010 sads" p1:TextExpression.Namespaces="{x:Reference __ReferenceID8}" p1:TextExpression.References="{x:Reference __ReferenceID9}" ConfigurationName="WaitForSignalService" DefinitionIdentity="WaitAndSee; Version=3.0.0.0" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="WorkflowService_1" Name="WaitForSignalService"
+﻿<WorkflowService mc:Ignorable="sap sap2010 sads" p1:TextExpression.Namespaces="{x:Reference __ReferenceID8}" p1:TextExpression.References="{x:Reference __ReferenceID9}" ConfigurationName="WaitForSignalService" DefinitionIdentity="WaitAndSee; Version=2.0.0.0" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="WorkflowService_1" Name="WaitForSignalService"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel"
  xmlns:fwc="clr-namespace:Fonlow.WorkflowDemo.Contracts;assembly=Fonlow.WorkflowDemo.Contracts"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -121,7 +121,7 @@
     <p1:If sap2010:WorkflowViewState.IdRef="If_1">
       <p1:If.Condition>
         <p1:InArgument x:TypeArguments="x:Boolean">
-          <mca:CSharpValue x:TypeArguments="x:Boolean">bookmarkName=="infiniteLoop3"</mca:CSharpValue>
+          <mca:CSharpValue x:TypeArguments="x:Boolean">bookmarkName=="infiniteLoop"</mca:CSharpValue>
         </p1:InArgument>
       </p1:If.Condition>
       <p1:If.Then>
@@ -165,7 +165,7 @@
               </Receive>
               <SendReply Request="{x:Reference __ReferenceID2}" Action="http://fonlow.com/FonlowDemo/2016/03/IWakeup/WakeupResponse" DisplayName="Wakeup_SendReply" sap2010:WorkflowViewState.IdRef="SendReply_4">
                 <SendParametersContent>
-                  <p1:InArgument x:TypeArguments="x:Boolean" x:Key="WakerupResult">False</p1:InArgument>
+                  <p1:InArgument x:TypeArguments="x:Boolean" x:Key="WakerupResult">True</p1:InArgument>
                 </SendParametersContent>
               </SendReply>
             </p1:Sequence>
@@ -275,7 +275,7 @@
         </p1:Pick>
       </p1:If.Else>
     </p1:If>
-    <sads:DebugSymbol.Symbol>d1JDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XFdhaXRGb3JTaWduYWxTZXJ2aWNlLnhhbWx4LhEDlwIRAQFIBXcTAUd4BXh0AUV5BZUCDQECTAdvEQFRcAd2EwFIeEZ4cQFGfAt8ZwEDgAEJrQEXATSwAQmTAhMBCFcNV1oBX2kNaV8BWV4RYiQBWGwNbF0BUnMNc1cBSYEBC4EBRQFEggELrAEWATWxAQvkARsBH+UBC5ICGwEJgwENqwEbATeCAUmCAU8BNrMBD9sBHQEn3QEN4wEcASDnAQ/rARoBGe0BDZECGwEKhwEPpQEZATymAQ+qARsBOLcBEdUBGwEs1gER2gEdASjdAU7dAVcBJuABE+ABeAEh6QET6QFbARruAQ/0AR4BEvUBD5ACHQELkgEVkgFiAT6ZARmdASwBPagBVKgBWQE5wgEXwgFkAS7JARvNAS4BLdgBVtgBWgEp7gFQ7gFZARjxARXxAXoBE/kBEYoCGwEQiwIRjwIdAQz+ARuCAi4BEY0CVo0CWwEN</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1JDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xXRlNlcnZpY2VDb250cmFjdEZpcnN0XFdhaXRGb3JTaWduYWxTZXJ2aWNlLnhhbWx4LhEDlwIRAQFIBXcTAUd4BXh0AUV5BZUCDQECTAdvEQFRcAd2EwFIeEZ4cQFGfAt8ZgEDgAEJrQEXATSwAQmTAhMBCFcNV1oBX2kNaV8BWV4RYiQBWGwNbF0BUnMNc1cBSYEBC4EBRQFEggELrAEWATWxAQvkARsBH+UBC5ICGwEJgwENqwEbATeCAUmCAU8BNrMBD9sBHQEn3QEN4wEcASDnAQ/rARoBGe0BDZECGwEKhwEPpQEZATymAQ+qARsBOLcBEdUBGwEs1gER2gEdASjdAU7dAVcBJuABE+ABeAEh6QET6QFbARruAQ/0AR4BEvUBD5ACHQELkgEVkgFiAT6ZARmdASwBPagBVKgBWAE5wgEXwgFkAS7JARvNAS4BLdgBVtgBWgEp7gFQ7gFZARjxARXxAXoBE/kBEYoCGwEQiwIRjwIdAQz+ARuCAi4BEY0CVo0CWwEN</sads:DebugSymbol.Symbol>
   </p1:Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>

@@ -194,7 +194,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Code\WaitForSignalService\WaitForSignalService_V1.xamlx">
+    <Content Include="VersionPlay.xamlx">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Code\WaitForSignalService\WaitForSignalServiceV2.xamlx">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
