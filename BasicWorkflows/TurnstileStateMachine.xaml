@@ -1,0 +1,247 @@
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Fonlow.Activities.TurnstileStateMachine" sap2010:ExpressionActivityEditor.ExpressionActivityEditor="C#" sap2010:WorkflowViewState.IdRef="Fonlow.Activities.Machine_1"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:fa="clr-namespace:Fonlow.Activities;assembly=BasicActivities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:si="clr-namespace:System.IO;assembly=mscorlib"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.CSharp</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>BasicActivities</AssemblyReference>
+      <AssemblyReference>SillyHelpers</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>BasicWorkflows</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <StateMachine DisplayName="Turnstile" sap2010:WorkflowViewState.IdRef="StateMachine_1">
+    <StateMachine.InitialState>
+      <State x:Name="__ReferenceID0" DisplayName="Locked" sap2010:WorkflowViewState.IdRef="State_2">
+        <State.Entry>
+          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Entry Locked">
+            <WriteLine.TextWriter>
+              <InArgument x:TypeArguments="si:TextWriter">
+                <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+              </InArgument>
+            </WriteLine.TextWriter>
+          </WriteLine>
+        </State.Entry>
+        <State.Exit>
+          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="Exit Locked">
+            <WriteLine.TextWriter>
+              <InArgument x:TypeArguments="si:TextWriter">
+                <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+              </InArgument>
+            </WriteLine.TextWriter>
+          </WriteLine>
+        </State.Exit>
+        <State.Transitions>
+          <Transition DisplayName="Coin" sap2010:WorkflowViewState.IdRef="Transition_3">
+            <Transition.Trigger>
+              <fa:Wakeup BookmarkName="coin" sap2010:WorkflowViewState.IdRef="Wakeup_1" />
+            </Transition.Trigger>
+            <Transition.To>
+              <State x:Name="__ReferenceID1" DisplayName="Unlocked" sap2010:WorkflowViewState.IdRef="State_1">
+                <State.Entry>
+                  <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_7" Text="Entry Unlocked">
+                    <WriteLine.TextWriter>
+                      <InArgument x:TypeArguments="si:TextWriter">
+                        <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                      </InArgument>
+                    </WriteLine.TextWriter>
+                  </WriteLine>
+                </State.Entry>
+                <State.Exit>
+                  <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_8" Text="Exit Unlocked">
+                    <WriteLine.TextWriter>
+                      <InArgument x:TypeArguments="si:TextWriter">
+                        <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                      </InArgument>
+                    </WriteLine.TextWriter>
+                  </WriteLine>
+                </State.Exit>
+                <State.Transitions>
+                  <Transition DisplayName="Push" sap2010:WorkflowViewState.IdRef="Transition_1">
+                    <Transition.Trigger>
+                      <fa:Wakeup BookmarkName="push" sap2010:WorkflowViewState.IdRef="Wakeup_2" />
+                    </Transition.Trigger>
+                    <Transition.To>
+                      <x:Reference>__ReferenceID0</x:Reference>
+                    </Transition.To>
+                    <Transition.Action>
+                      <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_4" Text="pushed, coin consumed">
+                        <WriteLine.TextWriter>
+                          <InArgument x:TypeArguments="si:TextWriter">
+                            <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                          </InArgument>
+                        </WriteLine.TextWriter>
+                      </WriteLine>
+                    </Transition.Action>
+                  </Transition>
+                  <Transition DisplayName="Coin" sap2010:WorkflowViewState.IdRef="Transition_2">
+                    <Transition.Trigger>
+                      <fa:Wakeup BookmarkName="coin" sap2010:WorkflowViewState.IdRef="Wakeup_3" />
+                    </Transition.Trigger>
+                    <Transition.To>
+                      <x:Reference>__ReferenceID1</x:Reference>
+                    </Transition.To>
+                    <Transition.Action>
+                      <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="More coin inserted, remain unlocked">
+                        <WriteLine.TextWriter>
+                          <InArgument x:TypeArguments="si:TextWriter">
+                            <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                          </InArgument>
+                        </WriteLine.TextWriter>
+                      </WriteLine>
+                    </Transition.Action>
+                    <Transition.Condition>True</Transition.Condition>
+                  </Transition>
+                </State.Transitions>
+              </State>
+            </Transition.To>
+            <Transition.Action>
+              <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_5" Text="coin inserted">
+                <WriteLine.TextWriter>
+                  <InArgument x:TypeArguments="si:TextWriter">
+                    <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                  </InArgument>
+                </WriteLine.TextWriter>
+              </WriteLine>
+            </Transition.Action>
+            <Transition.Condition>True</Transition.Condition>
+          </Transition>
+          <Transition DisplayName="Push" sap2010:WorkflowViewState.IdRef="Transition_4">
+            <Transition.Trigger>
+              <fa:Wakeup BookmarkName="push" sap2010:WorkflowViewState.IdRef="Wakeup_4" />
+            </Transition.Trigger>
+            <Transition.To>
+              <x:Reference>__ReferenceID0</x:Reference>
+            </Transition.To>
+            <Transition.Action>
+              <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Pushed again, Remain locked">
+                <WriteLine.TextWriter>
+                  <InArgument x:TypeArguments="si:TextWriter">
+                    <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                  </InArgument>
+                </WriteLine.TextWriter>
+              </WriteLine>
+            </Transition.Action>
+            <Transition.Condition>True</Transition.Condition>
+          </Transition>
+        </State.Transitions>
+      </State>
+    </StateMachine.InitialState>
+    <x:Reference>__ReferenceID0</x:Reference>
+    <x:Reference>__ReferenceID1</x:Reference>
+    <sads:DebugSymbol.Symbol>d0pDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xUdXJuc3RpbGVTdGF0ZU1hY2hpbmUueGFtbCYqA6IBEgIBASwHnQEPAgEVRQ99FwIBAi4LNBcCASY3Cz0XAgEjQg9CWwIBIYgBI4gBJwIBIIABD4YBGwIBHYwBD4wBWwIBG5oBI5oBJwIBGpIBD5gBGwIBF0cTTR8CARJQE1YfAgEPWxdbYwIBDWEXZyMCAQpsF2xjAgEIeit6LwIBB3IXeCMCAQQuSS5XAgEoMRExdgIBJzdJN1YCASU6ETp2AgEkQidCLQIBIoABTYABXAIBH4MBFYMBegIBHowBJ4wBLQIBHJIBTZIBagIBGZUBFZUBegIBGEdRR2ECARRKGUp+AgETUFFQYAIBEVMZU34CARBbL1s1AgEOYVVhbAIBDGQdZIIBAgELbC9sNQIBCXJVcnoCAQZ1HXWCAQIBBQ==</sads:DebugSymbol.Symbol>
+  </StateMachine>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Wakeup_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_7" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="WriteLine_8" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Wakeup_2" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Transition_1" sap:VirtualizedContainerService.HintSize="430,509">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">203,273.9 116.6,273.9 116.6,156</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">29</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">11</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Wakeup_3" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Transition_2" sap:VirtualizedContainerService.HintSize="430,509">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">277.1,249.5 277.1,219.5 347,219.5 347,276.95 317,276.95</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">50</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">32</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_1" sap:VirtualizedContainerService.HintSize="114,61">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">203,249.5</av:Point>
+            <av:Size x:Key="ShapeSize">114,61</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_5" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Transition_3" sap:VirtualizedContainerService.HintSize="430,509">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">222,138 242.9,138 242.9,249.5</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">56</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">26</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Wakeup_4" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Transition_4" sap:VirtualizedContainerService.HintSize="430,509">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">98,112.8 69,112.8 69,54 129,54 129,84</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">29</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">18</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_2" sap:VirtualizedContainerService.HintSize="124,72">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">98,84</av:Point>
+            <av:Size x:Key="ShapeSize">124,72</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">110</x:Double>
+            <x:Double x:Key="StateContainerHeight">36.079999999999984</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="StateMachine_1" sap:VirtualizedContainerService.HintSize="614,636">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
+            <x:Double x:Key="StateContainerWidth">600</x:Double>
+            <x:Double x:Key="StateContainerHeight">600</x:Double>
+            <av:PointCollection x:Key="ConnectorLocation">273,77.5 273,120 222,120</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Fonlow.Activities.Machine_1" sap:VirtualizedContainerService.HintSize="654,716" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>
