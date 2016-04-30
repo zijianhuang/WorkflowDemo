@@ -61,6 +61,24 @@
           </WriteLine>
         </State.Exit>
         <State.Transitions>
+          <Transition DisplayName="Push" sap2010:WorkflowViewState.IdRef="Transition_4">
+            <Transition.Trigger>
+              <fa:Wakeup BookmarkName="push" sap2010:WorkflowViewState.IdRef="Wakeup_4" />
+            </Transition.Trigger>
+            <Transition.To>
+              <x:Reference>__ReferenceID0</x:Reference>
+            </Transition.To>
+            <Transition.Action>
+              <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Pushed again, Remain locked">
+                <WriteLine.TextWriter>
+                  <InArgument x:TypeArguments="si:TextWriter">
+                    <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
+                  </InArgument>
+                </WriteLine.TextWriter>
+              </WriteLine>
+            </Transition.Action>
+            <Transition.Condition>True</Transition.Condition>
+          </Transition>
           <Transition DisplayName="Coin" sap2010:WorkflowViewState.IdRef="Transition_3">
             <Transition.Trigger>
               <fa:Wakeup BookmarkName="coin" sap2010:WorkflowViewState.IdRef="Wakeup_1" />
@@ -135,35 +153,28 @@
             </Transition.Action>
             <Transition.Condition>True</Transition.Condition>
           </Transition>
-          <Transition DisplayName="Push" sap2010:WorkflowViewState.IdRef="Transition_4">
-            <Transition.Trigger>
-              <fa:Wakeup BookmarkName="push" sap2010:WorkflowViewState.IdRef="Wakeup_4" />
-            </Transition.Trigger>
-            <Transition.To>
-              <x:Reference>__ReferenceID0</x:Reference>
-            </Transition.To>
-            <Transition.Action>
-              <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Pushed again, Remain locked">
-                <WriteLine.TextWriter>
-                  <InArgument x:TypeArguments="si:TextWriter">
-                    <mca:CSharpValue x:TypeArguments="si:TextWriter">new Fonlow.Utilities.TraceWriter()</mca:CSharpValue>
-                  </InArgument>
-                </WriteLine.TextWriter>
-              </WriteLine>
-            </Transition.Action>
-            <Transition.Condition>True</Transition.Condition>
-          </Transition>
         </State.Transitions>
       </State>
     </StateMachine.InitialState>
     <x:Reference>__ReferenceID0</x:Reference>
     <x:Reference>__ReferenceID1</x:Reference>
-    <sads:DebugSymbol.Symbol>d0pDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xUdXJuc3RpbGVTdGF0ZU1hY2hpbmUueGFtbCYqA6IBEgIBASwHnQEPAgEVRQ99FwIBAi4LNBcCASY3Cz0XAgEjQg9CWwIBIYgBI4gBJwIBIIABD4YBGwIBHYwBD4wBWwIBG5oBI5oBJwIBGpIBD5gBGwIBF0cTTR8CARJQE1YfAgEPWxdbYwIBDWEXZyMCAQpsF2xjAgEIeit6LwIBB3IXeCMCAQQuSS5XAgEoMRExdgIBJzdJN1YCASU6ETp2AgEkQidCLQIBIoABTYABXAIBH4MBFYMBegIBHowBJ4wBLQIBHJIBTZIBagIBGZUBFZUBegIBGEdRR2ECARRKGUp+AgETUFFQYAIBEVMZU34CARBbL1s1AgEOYVVhbAIBDGQdZIIBAgELbC9sNQIBCXJVcnoCAQZ1HXWCAQIBBQ==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0pDOlxWc1Byb2plY3RzXEZvbmxvd1dvcmtmbG93RGVtb1xCYXNpY1dvcmtmbG93c1xUdXJuc3RpbGVTdGF0ZU1hY2hpbmUueGFtbCYqA6IBEgIBASwHnQEPAgEVVw+PARcCAQIuCzQXAgEmNws9FwIBI0IPQlsCASFQI1AnAgEgSA9OGwIBHVQPVFsCARuaASOaAScCARqSAQ+YARsCARdZE18fAgESYhNoHwIBD20XbWMCAQ1zF3kjAgEKfhd+YwIBCIwBK4wBLwIBB4QBF4oBIwIBBC5JLlcCASgxETF2AgEnN0k3VgIBJToROnYCASRCJ0ItAgEiSE1IagIBH0sVS3oCAR5UJ1QtAgEckgFNkgFcAgEZlQEVlQF6AgEYWVFZYQIBFFwZXH4CARNiUWJgAgERZRllfgIBEG0vbTUCAQ5zVXNsAgEMdh12ggECAQt+L341AgEJhAFVhAF6AgEGhwEdhwGCAQIBBQ==</sads:DebugSymbol.Symbol>
   </StateMachine>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="211,62" />
       <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Wakeup_4" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="211,62" />
+      <sap2010:ViewStateData Id="Transition_4" sap:VirtualizedContainerService.HintSize="430,509">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">188,192.8 159,192.8 159,134 219,134 219,164</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">29</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">18</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="Wakeup_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="WriteLine_7" sap:VirtualizedContainerService.HintSize="211,62" />
       <sap2010:ViewStateData Id="WriteLine_8" sap:VirtualizedContainerService.HintSize="211,62" />
@@ -172,8 +183,8 @@
       <sap2010:ViewStateData Id="Transition_1" sap:VirtualizedContainerService.HintSize="430,509">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">203,273.9 116.6,273.9 116.6,156</av:PointCollection>
-            <x:Int32 x:Key="SrcConnectionPointIndex">29</x:Int32>
+            <av:PointCollection x:Key="ConnectorLocation">205.8,349.5 205.8,319.5 206.6,319.5 206.6,236</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">14</x:Int32>
             <x:Int32 x:Key="DestConnectionPointIndex">11</x:Int32>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -183,8 +194,8 @@
       <sap2010:ViewStateData Id="Transition_2" sap:VirtualizedContainerService.HintSize="430,509">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">277.1,249.5 277.1,219.5 347,219.5 347,276.95 317,276.95</av:PointCollection>
-            <x:Int32 x:Key="SrcConnectionPointIndex">50</x:Int32>
+            <av:PointCollection x:Key="ConnectorLocation">268.5,410.5 268.5,436.95 327,436.95 327,376.95 297,376.95</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">59</x:Int32>
             <x:Int32 x:Key="DestConnectionPointIndex">32</x:Int32>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -192,7 +203,7 @@
       <sap2010:ViewStateData Id="State_1" sap:VirtualizedContainerService.HintSize="114,61">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">203,249.5</av:Point>
+            <av:Point x:Key="ShapeLocation">183,349.5</av:Point>
             <av:Size x:Key="ShapeSize">114,61</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
@@ -202,27 +213,16 @@
       <sap2010:ViewStateData Id="Transition_3" sap:VirtualizedContainerService.HintSize="430,509">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">222,138 242.9,138 242.9,249.5</av:PointCollection>
-            <x:Int32 x:Key="SrcConnectionPointIndex">56</x:Int32>
-            <x:Int32 x:Key="DestConnectionPointIndex">26</x:Int32>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Wakeup_4" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="211,62" />
-      <sap2010:ViewStateData Id="Transition_4" sap:VirtualizedContainerService.HintSize="430,509">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">98,112.8 69,112.8 69,54 129,54 129,84</av:PointCollection>
-            <x:Int32 x:Key="SrcConnectionPointIndex">29</x:Int32>
-            <x:Int32 x:Key="DestConnectionPointIndex">18</x:Int32>
+            <av:PointCollection x:Key="ConnectorLocation">293.4,236 293.4,266 291.3,266 291.3,349.5</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">67</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">74</x:Int32>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="State_2" sap:VirtualizedContainerService.HintSize="124,72">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">98,84</av:Point>
+            <av:Point x:Key="ShapeLocation">188,164</av:Point>
             <av:Size x:Key="ShapeSize">124,72</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
             <x:Double x:Key="StateContainerWidth">110</x:Double>
@@ -234,10 +234,10 @@
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-            <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
+            <av:Point x:Key="ShapeLocation">210,2.5</av:Point>
             <x:Double x:Key="StateContainerWidth">600</x:Double>
             <x:Double x:Key="StateContainerHeight">600</x:Double>
-            <av:PointCollection x:Key="ConnectorLocation">273,77.5 273,120 222,120</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">252,77.5 252,107.5 256.2,107.5 256.2,164</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>

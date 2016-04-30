@@ -11,7 +11,8 @@ using System.Threading;
 using System.Activities.DurableInstancing;
 using System.Diagnostics;
 using System.IO;
-
+using System.Activities.Statements;
+using System.Activities.Tracking;
 
 namespace BasicTests
 {
@@ -155,6 +156,7 @@ namespace BasicTests
 
             app2.Load(instanceId);
             app2.Run();//optional
+            Thread.Sleep(200);
             var br = app2.ResumeBookmark(bookmarkName, bookmarkValue);
             Assert.Equal(BookmarkResumptionResult.Success, br);
 
@@ -805,7 +807,7 @@ namespace BasicTests
             Assert.False(completed1);
             Assert.True(unloaded1);
 
-            outputs = LoadWithBookmarkAndComplete(a, id, bookmarkName + "a", null);//Wakup does not need bookmark value
+            outputs = LoadWithBookmarkAndComplete(a, id, bookmarkName, null);//Wakup does not need bookmark value
             Assert.Equal("Someone waked me up", (string)outputs["Result"]);
         }
 
@@ -991,73 +993,6 @@ namespace BasicTests
 
             Assert.False((bool)outputs["Result"]);
         }
-
-
-        [Fact]
-        public void TestStateMachine()
-        {
-
-            var a = new TurnstileStateMachine();
-
-            AutoResetEvent syncEvent = new AutoResetEvent(false);
-
-            var app = new WorkflowApplication(a);
-            app.InstanceStore = WFDefinitionStore.Instance.Store;
-            app.PersistableIdle = (eventArgs) =>
-            {
-                return PersistableIdleAction.None; //Must be None so 1 application instance will do all states
-            };
-
-            app.OnUnhandledException = (e) =>
-            {
-
-                return UnhandledExceptionAction.Abort;
-            };
-
-            app.Completed = delegate (WorkflowApplicationCompletedEventArgs e)
-            {
-
-            };
-
-            app.Aborted = (eventArgs) =>
-            {
-
-            };
-
-
-            var id = app.Id;
-            app.Run();
-
-            Thread.Sleep(200);
-            var br = app.ResumeBookmark("coin", null);
-            Assert.Equal(BookmarkResumptionResult.Success, br);
-
-            Thread.Sleep(200);
-            br = app.ResumeBookmark("coin", null);
-            Assert.Equal(BookmarkResumptionResult.Success, br);
-
-            Thread.Sleep(200);
-            br = app.ResumeBookmark("push", null);
-            Assert.Equal(BookmarkResumptionResult.Success, br);
-
-            Thread.Sleep(200);
-            br = app.ResumeBookmark("push", null);
-            Assert.Equal(BookmarkResumptionResult.Success, br);
-
-            Thread.Sleep(200);
-            br = app.ResumeBookmark("funky", null);
-            Assert.Equal(BookmarkResumptionResult.NotFound, br);
-
-            Thread.Sleep(200);
-            br = app.ResumeBookmark("coin", null);
-            Assert.Equal(BookmarkResumptionResult.Success, br);
-
-
-            Thread.Sleep(500);//ResumeBookmark is asynchrounous in a new thread, so better to wait, otherwise they got killed when app.Cancel is executed.
-            app.Cancel();
-
-        }
-
 
 
     }

@@ -75,6 +75,7 @@
     <Compile Include="InvokeDelegateTests.cs" />
     <Compile Include="AsyncCodeActivityTests.cs" />
     <Compile Include="InvokeMethodTests.cs" />
+    <Compile Include="StateMachineTests.cs" />
     <Compile Include="WFDefinitionIdentityFactoryTests.cs" />
     <Compile Include="PersistenceDefinitionIdentityTests.cs" />
     <Compile Include="PersistenceTests.cs" />
